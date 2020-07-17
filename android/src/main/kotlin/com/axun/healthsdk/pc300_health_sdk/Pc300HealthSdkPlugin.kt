@@ -166,6 +166,10 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
                     onConnectLoseCode -> {
                         instance.channel?.invokeMethod("onConnectLose",msg.obj)
                     }
+                    /*获取全部设备*/
+                    onDiscoveryCompleteCode -> {
+                        instance.channel?.invokeMethod("onDiscoveryComplete",msg.obj)
+                    }
 
                 }
             }
@@ -175,6 +179,9 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
         val onConnectSuccessCode = 0x100
         /*连接失败*/
         val onConnectErrorCode = 0x101
+
+        /*获取全部设备列表*/
+        val onDiscoveryCompleteCode = 0x121
 
         /*获取到设备ID*/
         val onGetDeviceIDCode = 0x102
@@ -247,21 +254,33 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
                 result.success("Android ${android.os.Build.VERSION.RELEASE}")
             }
 
+            /**
+             * @Description 检查蓝牙是否打开
+             **/
             "isOpen" -> {
                 val isOpen = BlueManageUtils.instance.client.isOpen
                 result.success(isOpen.toString())
             }
 
+            /**
+             * @Description 打开蓝牙
+             **/
             "openDevice" -> {
                 val open = BlueManageUtils.instance.client.Open()
                 result.success(open.toString())
             }
 
+            /**
+             * @Description 关闭蓝牙
+             **/
             "closeDevice" -> {
                 val close = BlueManageUtils.instance.client.Close()
                 result.success(close.toString())
             }
 
+            /**
+             * @Description 获取已绑定设备
+             **/
             "getBondedDevices" -> {
                 val devices = BlueManageUtils.instance.client.bondedDevices
                 val list: MutableList<BlueDevice> = ArrayList()
@@ -274,14 +293,113 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
                 result.success(list.toAccessorJson())
             }
 
+            /**
+             * @Description 连接设备
+             **/
             "connect" -> {
                 val address = call.argument<String>("address")
                 val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
                 BlueManageUtils.instance.client.Connect(device)
             }
 
+            /**
+             * @Description 断开连接
+             **/
             "disConnect" -> {
                 BlueManageUtils.instance.release()
+            }
+
+            /**
+             * @Description 开始搜索设备
+             **/
+            "startDiscovery"->{
+                BlueManageUtils.instance.startDiscovery()
+            }
+
+            /**
+             * @Description 开始接受数据
+             **/
+            "startMeasure" -> {
+                BlueManageUtils.instance.healthClient.Start()
+            }
+
+            /**
+             * @Description 停止接受数据
+             **/
+            "stopMeasure" -> {
+                BlueManageUtils.instance.healthClient.Stop()
+            }
+
+            /**
+             * @Description 暂停接受数据
+             **/
+            "pauseMeasure" -> {
+                BlueManageUtils.instance.healthClient.Pause()
+            }
+
+            /**
+             * @Description 恢复接受数据
+             **/
+            "continueMeasure" -> {
+                BlueManageUtils.instance.healthClient.Continue()
+            }
+
+            /**
+             * @Description 查询设备版本信息
+             **/
+            "queryDeviceVer" -> {
+                BlueManageUtils.instance.healthClient.QueryDeviceVer()
+            }
+
+            /**
+             * @Description 查询血压模块状态
+             **/
+            "queryNIBPStatus" -> {
+                BlueManageUtils.instance.healthClient.QueryNIBPStatus()
+            }
+
+            /**
+             * @Description 查询血氧模块状态
+             **/
+            "querySpO2Status" -> {
+                BlueManageUtils.instance.healthClient.QuerySpO2Status()
+            }
+
+            /**
+             * @Description 查询血糖模块状态
+             **/
+            "queryGluStatus" ->{
+                BlueManageUtils.instance.healthClient.QueryGluStatus()
+            }
+
+            /**
+             * @Description 查询体温模块状态
+             **/
+            "queryTmpStatus"->{
+                BlueManageUtils.instance.healthClient.QueryTmpStatus()
+            }
+
+            /**
+             * @Description 查询心电模块版本信息
+             **/
+            "queryECGVer" -> {
+                BlueManageUtils.instance.healthClient.QueryECGVer()
+            }
+
+            /**
+             * @Description 血压测量控制
+             **/
+            "setNIBPAction" -> {
+                val startMeasure = call.argument<Boolean>("startMeasure")
+                BlueManageUtils.instance.healthClient.SetNIBPAction(startMeasure?:false)
+            }
+
+            /**
+             * @Description 心电测量控制
+             **/
+            "setECGMotion"->{
+                val startMeasure = call.argument<Boolean>("startMeasure")
+                BlueManageUtils.instance.healthClient.SetECGMotion(startMeasure?:false)
             }
 
             else -> {
@@ -298,6 +416,14 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         override fun OnDiscoveryCompleted(devices: MutableList<BluetoothDevice>) {
+            val list: MutableList<BlueDevice> = ArrayList()
+
+            devices.forEach {
+                val item = BlueDevice(address = it.address,
+                        name = it.name, type = it.type, bondState = it.bondState)
+                list.add(item)
+            }
+            sendChannelMessage(onDiscoveryCompleteCode,list.toAccessorJson())
 
         }
 

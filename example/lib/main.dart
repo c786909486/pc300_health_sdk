@@ -108,6 +108,13 @@ class _MainState extends State<MainPage>{
               },
             ),
 
+//            FlatButton(
+//              child: Text("搜索设备"),
+//              onPressed: ()  {
+//                 HealthDataSdk.startDiscovery();
+//              },
+//            ),
+
             FlatButton(
               child: Text("连接健康包"),
               onPressed: ()  {
@@ -121,6 +128,13 @@ class _MainState extends State<MainPage>{
                 Navigator.push(context, MaterialPageRoute(builder: (context){
                   return HealthDataPage();
                 }));
+              },
+            ),
+
+            FlatButton(
+              child: Text("断开连接"),
+              onPressed: ()  {
+                HealthDataSdk.disConnect();
               },
             ),
           ],

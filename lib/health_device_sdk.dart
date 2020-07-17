@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:pc300_health_sdk/health_data_plugin.dart';
 import 'package:pc300_health_sdk/model/ecg_data_model.dart';
 import 'model/blue_device.dart';
 
-typedef Future<dynamic> EventHandler(String res);
-typedef Future<dynamic> EventHandlerMap(Map<String, dynamic> event);
+typedef Future<dynamic> EventHandlerMap<T>(T event);
 
 class HealthDataSdk {
   static const MethodChannel _channel = const MethodChannel('pc300_health_sdk');
@@ -29,6 +29,9 @@ class HealthDataSdk {
   ///连接失败
   EventHandlerMap _onConnectError;
 
+//  ///搜索完成
+//  EventHandlerMap<List<BlueDevice>> _onDiscoveryComplete;
+
   ///获取设备id
   EventHandlerMap _onGetDeviceID;
 
@@ -42,7 +45,7 @@ class HealthDataSdk {
   EventHandlerMap _onGetSpO2Param;
 
   ///获取到血氧波形数据
-  EventHandlerMap _onGetSpO2Wave;
+  EventHandlerMap<OxgenWaveDataModel> _onGetSpO2Wave;
 
   ///血压测量状态改变
   EventHandlerMap _onGetNIBPAction;
@@ -57,7 +60,7 @@ class HealthDataSdk {
   EventHandlerMap _onGetECGAction;
 
   ///获取心电实时数据
-  EventHandlerMap _onGetECGRealTime;
+  EventHandlerMap<EcgDataModel> _onGetECGRealTime;
 
   ///心电测量结果
   EventHandlerMap _onGetECGResult;
@@ -90,9 +93,11 @@ class HealthDataSdk {
   void addDeviceLinkHandler({
     EventHandlerMap onConnectSuccess,
     EventHandlerMap onConnectError,
+//    EventHandlerMap<List<BlueDevice>> onDiscoveryComplete,
   }) {
     this._onConnectSuccess = onConnectSuccess;
     this._onConnectError = onConnectError;
+//    this._onDiscoveryComplete = onDiscoveryComplete;
   }
 
   ///健康数据回调
@@ -101,12 +106,12 @@ class HealthDataSdk {
     EventHandlerMap onGetDeviceVer,
     EventHandlerMap onGetECGVer,
     EventHandlerMap onGetSpO2Param,
-    EventHandlerMap onGetSpO2Wave,
+    EventHandlerMap<OxgenWaveDataModel> onGetSpO2Wave,
     EventHandlerMap onGetNIBPAction,
     EventHandlerMap onGetNIBPRealTime,
     EventHandlerMap onGetNIBPResult,
     EventHandlerMap onGetECGAction,
-    EventHandlerMap onGetECGRealTime,
+    EventHandlerMap<EcgDataModel> onGetECGRealTime,
     EventHandlerMap onGetECGResult,
     EventHandlerMap onGetTmp,
     EventHandlerMap onGetGlu,
@@ -170,7 +175,8 @@ class HealthDataSdk {
 
       ///获取到血氧波形数据
       case "onGetSpO2Wave":
-        return _onGetSpO2Wave(jsonDecode(call.arguments).cast<String, dynamic>());
+        return _onGetSpO2Wave(
+            OxgenWaveDataModel.fromJson(jsonDecode(call.arguments)));
 
       ///血压测量状态改变
       case "onGetNIBPAction":
@@ -191,8 +197,8 @@ class HealthDataSdk {
       ///获取心电实时数据
       case "onGetECGRealTime":
 //        Map<String,dynamic> map = {"dad":"dadasd"};
-        Map<String,dynamic> map = jsonDecode(call.arguments);
-        return _onGetECGRealTime(map);
+        Map<String, dynamic> map = jsonDecode(call.arguments);
+        return _onGetECGRealTime(EcgDataModel.fromJson(map));
 
       ///心电测量结果
       case "onGetECGResult":
@@ -229,10 +235,17 @@ class HealthDataSdk {
       ///与设备连接丢失
       case "onConnectLose":
         return _onConnectLose(call.arguments.cast<String, dynamic>());
+
+//      ///获取全部设备列表
+//      case "onDiscoveryComplete":
+//        List<dynamic> list = json.decode(call.arguments);
+//        List<BlueDevice> devices = list.map((e) => BlueDevice.fromJson(e)).toList();
+//        return _onDiscoveryComplete(devices);
       default:
         throw new UnsupportedError("Unrecongnized Event");
     }
   }
+
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -271,7 +284,72 @@ class HealthDataSdk {
     _channel.invokeMethod("connect", {"address": address});
   }
 
+  ///断开连接
   static void disConnect() {
     _channel.invokeMethod("disConnect");
+  }
+
+//  static void startDiscovery(){
+//    _channel.invokeMethod("startDiscovery");
+//  }
+
+  ///开始接收数据
+  static void startMeasure(){
+    _channel.invokeMethod("startMeasure");
+  }
+
+  ///停止接收数据
+  static void stopMeasure(){
+    _channel.invokeMethod("stopMeasure");
+  }
+
+  ///暂停接收数据
+  static void pauseMeasure(){
+    _channel.invokeMethod("pauseMeasure");
+  }
+
+  ///恢复接收数据
+  static void continueMeasure(){
+    _channel.invokeMethod("continueMeasure");
+  }
+
+  ///查询设备版本信息
+  static void queryDeviceVer(){
+    _channel.invokeMethod("queryDeviceVer");
+  }
+
+  ///查询血压模块状态
+  static void queryNIBPStatus(){
+    _channel.invokeMethod("queryNIBPStatus");
+  }
+
+  ///查询血氧模块状态
+  static void querySpO2Status(){
+    _channel.invokeMethod("querySpO2Status");
+  }
+
+  ///查询血糖模块状态
+  static void queryGluStatus(){
+    _channel.invokeMethod("queryGluStatus");
+  }
+
+  ///查询体温模块状态
+  static void queryTmpStatus(){
+    _channel.invokeMethod("queryTmpStatus");
+  }
+
+  ///查询心电模块版本信息
+  static void queryECGVer(){
+    _channel.invokeMethod("queryECGVer");
+  }
+
+  ///血压测量控制
+  static void setNIBPAction(bool startMeasure){
+    _channel.invokeMethod("setNIBPAction",{"startMeasure":startMeasure});
+  }
+
+  ///心电测量控制
+  static void setECGMotion(bool startMeasure){
+    _channel.invokeMethod("setECGMotion",{"startMeasure":startMeasure});
   }
 }

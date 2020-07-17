@@ -1,10 +1,12 @@
-class OxygenWaveDataModel {
+import 'dart:convert';
+
+class OxgenWaveDataModel {
     List<WaveData> waveData;
 
-    OxygenWaveDataModel({this.waveData});
+    OxgenWaveDataModel({this.waveData});
 
-    factory OxygenWaveDataModel.fromJson(Map<String, dynamic> json) {
-        return OxygenWaveDataModel(
+    factory OxgenWaveDataModel.fromJson(Map<String, dynamic> json) {
+        return OxgenWaveDataModel(
             waveData: json['waveData'] != null ? (json['waveData'] as List).map((i) => WaveData.fromJson(i)).toList() : null,
         );
     }
@@ -16,6 +18,11 @@ class OxygenWaveDataModel {
         }
         return data;
     }
+
+    @override
+  String toString() {
+    return jsonEncode(this);
+  }
 }
 
 class WaveData {

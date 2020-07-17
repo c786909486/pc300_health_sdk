@@ -13,6 +13,7 @@ class HealthDataPage extends StatefulWidget {
 
 class _HealthDataState extends State<HealthDataPage> {
   String _tmp = "体温：";
+  String _wave = "111";
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _HealthDataState extends State<HealthDataPage> {
     },onGetSpO2Wave:(data) async{
       ///获取到血氧波形数据
       setState(() {
-        _tmp = data.toString();
+        _wave = data.toString();
       });
     },onGetSpO2Param:(data)async{
       ///获取血氧参数
@@ -53,9 +54,9 @@ class _HealthDataState extends State<HealthDataPage> {
 
     },onGetECGRealTime:(data) async{
       ///获取心电实时数据
-      EcgDataModel ecgData = EcgDataModel.fromJson(data);
       setState(() {
-        _tmp = ecgData.ecgdata.data[0].data.toString();
+
+        _tmp = data.ecgdata.data[0].data.toString();
       });
     },onGetECGResult:(data) async{
       ///获取心电结果
@@ -85,7 +86,14 @@ class _HealthDataState extends State<HealthDataPage> {
         alignment: Alignment.center,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[Text(_tmp)],
+          children: <Widget>[
+            FlatButton(
+              child: Text("测量血压"),
+              onPressed: (){
+                HealthDataSdk.setNIBPAction(true);
+              },
+            ),
+          Text(_tmp),Text(_wave)],
         ),
       ),
     );
