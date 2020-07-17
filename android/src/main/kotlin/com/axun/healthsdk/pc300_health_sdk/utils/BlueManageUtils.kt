@@ -112,7 +112,7 @@ class BlueManageUtils {
             map["nGrade"] = nGrade
             map["nBPErr"] = nBPErr
             map["errorMsg"] = getErrorMessage(nBPErr)
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPResultCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPResultCode, map)
         }
 
         /**
@@ -122,7 +122,7 @@ class BlueManageUtils {
             Log.d(tag, "心电测量状态改变====》$bStart ")
             val map = HashMap<String, Any>()
             map["bStart"] = bStart
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGActionCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGActionCode, map)
         }
 
         /**
@@ -133,7 +133,7 @@ class BlueManageUtils {
             val map = HashMap<String, Any>()
             map["bHeartbeat"] = bHeartbeat
             map["nBldPrs"] = nBldPrs
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPRealTimeCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPRealTimeCode, map)
 
         }
 
@@ -146,7 +146,7 @@ class BlueManageUtils {
             map["ecgdata"] = ecgdata
             map["nHR"] = nHR
             map["bLeadoff"] = bLeadoff
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGRealTimeCode, map.toAccessorJson())
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGRealTimeCode, map.toAccessorJson())
         }
 
         /**
@@ -160,7 +160,7 @@ class BlueManageUtils {
             map["nHWMinor"] = nHWMinor
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPStatusCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPStatusCode, map)
         }
 
 
@@ -171,7 +171,7 @@ class BlueManageUtils {
             Log.d(tag, "OnGetPowerOff")
             val map = HashMap<String, Any?>()
             map["result"] = "finish"
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetPowerOffCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetPowerOffCode, map)
         }
 
         /**
@@ -183,7 +183,7 @@ class BlueManageUtils {
             map["nResult"] = nResult
             map["nHR"] = nHR
             map["resultMsg"] = getECGResultMsg(nResult)
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGResultCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGResultCode, map)
         }
 
         /**
@@ -197,7 +197,7 @@ class BlueManageUtils {
             map["nHWMinor"] = nHWMinor
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetGluStatusCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetGluStatusCode, map)
         }
 
         /**
@@ -207,7 +207,7 @@ class BlueManageUtils {
             Log.d(tag, "OnGetDeviceID")
             val map = HashMap<String, Any?>()
             map["sDeviceID"] = sDeviceID
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetDeviceIDCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetDeviceIDCode, map)
         }
 
         /**
@@ -219,7 +219,7 @@ class BlueManageUtils {
             val map = HashMap<String, Any?>()
             map["nGlu"] = nGlu
             map["nGluStatus"] = nGluStatus
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetGluCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetGluCode, map)
         }
 
         /**
@@ -229,7 +229,7 @@ class BlueManageUtils {
             Log.d(tag, "OnConnectLose")
             val map = HashMap<String, Any?>()
             map["result"] = "lose"
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onConnectLoseCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onConnectLoseCode, map)
         }
 
         /**
@@ -239,7 +239,7 @@ class BlueManageUtils {
             Log.d(tag, "OnGetNIBPAction")
             val map = HashMap<String, Any?>()
             map["bStart"] = bStart
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPActionCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPActionCode, map)
         }
 
         /**
@@ -253,7 +253,7 @@ class BlueManageUtils {
             map["nHWMinor"] = nHWMinor
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2StatusCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2StatusCode, map)
         }
 
         /**
@@ -272,7 +272,7 @@ class BlueManageUtils {
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
             map["nBattery"] = nBattery
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetDeviceVerCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetDeviceVerCode, map)
         }
 
         /**
@@ -286,7 +286,7 @@ class BlueManageUtils {
             map["nHWMinor"] = nHWMinor
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetTmpStatusCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetTmpStatusCode, map)
         }
 
         /**
@@ -303,7 +303,7 @@ class BlueManageUtils {
             map["nTmp"] = nTmp
             map["nTmpStatus"] = nTmpStatus
             map["nResultStatus"] = nResultStatus
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetTmpCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetTmpCode, map)
 
         }
 
@@ -317,7 +317,7 @@ class BlueManageUtils {
             map["nHWMinor"] = nHWMinor
             map["nSWMajor"] = nSWMajor
             map["nSWMinor"] = nSWMinor
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGVerCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGVerCode, map)
         }
 
         /**
@@ -327,7 +327,7 @@ class BlueManageUtils {
             Log.d(tag, "OnGetSpO2Wave")
             val map = HashMap<String, Any?>()
             map["waveData"] = waveData
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2WaveCode, map.toAccessorJson())
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2WaveCode, map.toAccessorJson())
         }
 
         /**
@@ -341,7 +341,7 @@ class BlueManageUtils {
             map["nPI"] = nPI
             map["nStatus"] = nStatus
             map["nMode"] = nMode
-            Pc300HealthSdkPlugin.instance.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2ParamCode, map)
+            Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2ParamCode, map)
 
         }
 

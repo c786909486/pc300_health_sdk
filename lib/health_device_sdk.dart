@@ -254,20 +254,20 @@ class HealthDataSdk {
 
   /// 蓝牙是否打开
   static Future<bool> isOpen() async {
-    String isOpen = await _channel.invokeMethod('isOpen');
-    return isOpen == 'true';
+    bool isOpen = await _channel.invokeMethod('isOpen');
+    return isOpen;
   }
 
   /// 打开蓝牙
   static Future<bool> openDevice() async {
-    String openResult = await _channel.invokeMethod("openDevice");
-    return openResult == 'true';
+    bool openResult = await _channel.invokeMethod("openDevice");
+    return openResult;
   }
 
   /// 关闭蓝牙
   static Future<bool> closeDevice() async {
-    String openResult = await _channel.invokeMethod("closeDevice");
-    return openResult == 'true';
+    bool openResult = await _channel.invokeMethod("closeDevice");
+    return openResult;
   }
 
   ///获取绑定设备

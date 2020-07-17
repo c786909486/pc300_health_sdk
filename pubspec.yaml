@@ -1,8 +1,8 @@
 name: pc300_health_sdk
 description: A new Flutter project.
-version: 0.0.1
-author:
-homepage:
+version: 0.0.2
+author: Axun <c786909486@gmail.com>
+homepage: https://github.com/c786909486/pc300_health_sdk
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -71,8 +71,57 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         @JvmStatic
         fun registerWith(registrar: Registrar) {
+            BlueManageUtils.instance.init(registrar.context(), blueDeviceListener)
             instance.channel  = MethodChannel(registrar.messenger(), "pc300_health_sdk")
             instance.channel ?.setMethodCallHandler(Pc300HealthSdkPlugin())
+        }
+
+
+        val blueDeviceListener = object : BlueManageUtils.OnBlueToothCallback {
+            override fun onStartDiscovery() {
+
+            }
+
+            @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+            override fun OnDiscoveryCompleted(devices: MutableList<BluetoothDevice>) {
+                val list: MutableList<BlueDevice> = ArrayList()
+
+                devices.forEach {
+                    val item = BlueDevice(address = it.address,
+                            name = it.name, type = it.type, bondState = it.bondState)
+                    list.add(item)
+                }
+                sendChannelMessage(onDiscoveryCompleteCode,list.toAccessorJson())
+
+            }
+
+            override fun onConnectSuccess() {
+                val map = HashMap<String, Any>()
+                map["success"] = true
+                map["message"] = "success"
+                sendChannelMessage(onConnectSuccessCode, map)
+            }
+
+            override fun onConnectError(error: String) {
+                val map = HashMap<String, Any>()
+                map["success"] = false
+                map["message"] = error
+                sendChannelMessage(onConnectErrorCode, map)
+            }
+
+
+            override fun onFindDevice(device: BluetoothDevice) {
+
+            }
+
+        }
+
+
+        fun sendChannelMessage(messageCode: Int, value: Any?) {
+            val message = Message()
+            message.what = messageCode
+            message.obj = value;
+            handler.sendMessage(message)
         }
 
         var handler = @SuppressLint("HandlerLeak")
@@ -259,7 +308,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              **/
             "isOpen" -> {
                 val isOpen = BlueManageUtils.instance.client.isOpen
-                result.success(isOpen.toString())
+                result.success(isOpen)
             }
 
             /**
@@ -267,7 +316,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              **/
             "openDevice" -> {
                 val open = BlueManageUtils.instance.client.Open()
-                result.success(open.toString())
+                result.success(open)
             }
 
             /**
@@ -409,51 +458,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
     }
 
 
-    private val blueDeviceListener = object : BlueManageUtils.OnBlueToothCallback {
-        override fun onStartDiscovery() {
 
-        }
-
-        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-        override fun OnDiscoveryCompleted(devices: MutableList<BluetoothDevice>) {
-            val list: MutableList<BlueDevice> = ArrayList()
-
-            devices.forEach {
-                val item = BlueDevice(address = it.address,
-                        name = it.name, type = it.type, bondState = it.bondState)
-                list.add(item)
-            }
-            sendChannelMessage(onDiscoveryCompleteCode,list.toAccessorJson())
-
-        }
-
-        override fun onConnectSuccess() {
-            val map = HashMap<String, Any>()
-            map["success"] = true
-            map["message"] = "success"
-            sendChannelMessage(onConnectSuccessCode, map)
-        }
-
-        override fun onConnectError(error: String) {
-            val map = HashMap<String, Any>()
-            map["success"] = false
-            map["message"] = error
-            sendChannelMessage(onConnectErrorCode, map)
-        }
-
-
-        override fun onFindDevice(device: BluetoothDevice) {
-
-        }
-
-    }
-
-    fun sendChannelMessage(messageCode: Int, value: Any?) {
-        val message = Message()
-        message.what = messageCode
-        message.obj = value;
-        handler.sendMessage(message)
-    }
 
 
 
