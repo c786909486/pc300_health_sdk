@@ -7,18 +7,20 @@
 
 #import <Foundation/Foundation.h>
 #import "CRSpotCheck.h"
+#import "Pc300HealthSdkPlugin.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^scanResult_block)(NSMutableArray *deviceList);
-//typedef void(^DiscoveryComplete)(NSMutableArray *deviceList);
+//typedef void(^scanResult_block)(NSMutableArray *deviceList);
+//typedef void(^OnConnectSuccess_block)(int isConnect);
 @interface BlueManageUtils : NSObject
 
 + (instancetype)shareEngine;
+@property (nonatomic, strong) FlutterMethodChannel *methodChannel;
 
 - (BOOL) isOpen;
 
-- (void) startScan:(float)timeout scanResult:(scanResult_block)scanResult;
+- (void) startScan:(float)timeout;
 
 - (void) stopScan;
 
@@ -32,10 +34,8 @@ typedef void(^scanResult_block)(NSMutableArray *deviceList);
 * 连接一个蓝牙设备 */
 
 - (void)connectDevice:(NSString *) myPeripheralAddress;
-/**
 
-* 断开当前蓝牙的连接 */
-
+/* 断开当前蓝牙的连接 */
 - (void)disconnectDevice;
 
 -(void) SetNIBPAction:(BOOL)bFlag;

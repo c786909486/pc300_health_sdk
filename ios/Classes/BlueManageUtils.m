@@ -7,14 +7,15 @@
 
 #import "BlueManageUtils.h"
 #import "CRCreativeSDK.h"
-#import "Pc300HealthSdkPlugin.h"
 
 
 @interface BlueManageUtils()<CreativeDelegate,SpotCheckDelegate>
 @property (nonatomic, strong) Pc300HealthSdkPlugin *healthSdkPlugin;
 @property (nonatomic, strong) CreativePeripheral *currentPeripheral;
 @property (nonatomic, strong) NSMutableArray *deviceList;
-@property (nonatomic, copy) scanResult_block scanResult;
+//@property (nonatomic, copy) scanResult_block scanResult;
+//@property (nonatomic, copy) OnConnectSuccess_block onConnectSuccess;
+
 @end
 
 @implementation BlueManageUtils
@@ -25,7 +26,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedEngine = [[[self class] alloc] init];
-        _sharedEngine.healthSdkPlugin = [[Pc300HealthSdkPlugin alloc] init];
+//        _sharedEngine.healthSdkPlugin = [[Pc300HealthSdkPlugin alloc] init];
         [CRCreativeSDK sharedInstance].delegate = _sharedEngine;
         [CRSpotCheck sharedInstance].delegate = _sharedEngine;
     });
@@ -46,9 +47,9 @@
             break;
     }
 }
-- (void) startScan:(float)timeout scanResult:(nonnull scanResult_block)scanResult
+- (void) startScan:(float)timeout
 {
-    self.scanResult = scanResult;
+    [self.deviceList removeAllObjects];
     [[CRCreativeSDK sharedInstance] startScan:timeout];
 }
 
@@ -57,22 +58,25 @@
     [[CRCreativeSDK sharedInstance] stopScan];
 }
 
-- (NSMutableArray *)GetDeviceList
+- (NSMutableArray *) GetDeviceList
 {
-    return self.deviceList;
+    return [[CRCreativeSDK sharedInstance] GetDeviceList];
 }
 - (void)connectDevice:(NSString *) myPeripheralAddress
 {
+    
     [[CRCreativeSDK sharedInstance] stopScan];
     for (CreativePeripheral *peripheral in [[CRCreativeSDK sharedInstance] GetDeviceList]) {
         if ([myPeripheralAddress isEqualToString:peripheral.peripheral.identifier.UUIDString]) {
             self.currentPeripheral = peripheral;
+            NSLog(@"第一次拿到 - %@",self.currentPeripheral);
             [[CRCreativeSDK sharedInstance] connectDevice:peripheral];
         }
     }
 }
 - (void)disconnectDevice
 {
+    NSLog(@"断开连接时 - %@",self.currentPeripheral.advName);
     return [[CRCreativeSDK sharedInstance] disconnectDevice:self.currentPeripheral];
 }
 
@@ -97,23 +101,38 @@
 ///搜索完成时调用
 -(void)OnSearchCompleted:(CRCreativeSDK *)crManager
 {
-    if (self.scanResult) {
-        self.scanResult(self.deviceList);
-    }
+//    if (self.scanResult) {
+//        self.scanResult(self.deviceList);
+//    }
+    [self.methodChannel invokeMethod:@"onDiscoveryComplete" arguments:[self dataToJsonString:self.deviceList]];
 }
 ///与设备连接成功时调用。
 -(void)crManager:(CRCreativeSDK *)crManager OnConnected:(CreativePeripheral *)peripheral withResult:(resultCodeType)result CurrentCharacteristic:(CBCharacteristic *)theCurrentCharacteristic
 {
     if (result == RESULT_SUCCESS) {
-        [self.healthSdkPlugin handleMethodCallWithName:onConnectSuccess withParm:@{}];
+        [[CRSpotCheck sharedInstance] QueryDeviceVer:peripheral];
+        NSDictionary *parm = @{
+            @"success": @YES,
+            @"message": @"success"
+        };
+        [self.methodChannel invokeMethod:@"onConnectSuccess" arguments:parm];//[self dataToJsonString:parm]
     } else {
-        [self.healthSdkPlugin handleMethodCallWithName:onConnectError withParm:@{}];
+        NSDictionary *parm = @{
+            @"success": @NO,
+            @"message": @"error"
+        };
+        [self.methodChannel invokeMethod:@"onConnectError" arguments:parm];
     }
+    
 }
 ///连接失败。
 -(void)crManager:(CRCreativeSDK *)crManager OnConnectFail:(CBPeripheral *)port
 {
-    [self.healthSdkPlugin handleMethodCallWithName:onConnectError withParm:@{}];
+    NSDictionary *parm = @{
+        @"success": @NO,
+        @"message": @"error"
+    };
+    [self.methodChannel invokeMethod:@"onConnectError" arguments:parm];
 }
 
 ///血压测量控制
@@ -170,7 +189,8 @@
     map[@"nGrade"] = @(nGrade);
     map[@"nBPErr"] = @(nBPErr);
     map[@"errorMsg"] = [self ShowNibpError:nBPErr];
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPResult withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPResult withParm:map];
+    [self.methodChannel invokeMethod:@"onGetNIBPResult" arguments:map];
 }
 /**
  * 心电测量状态改变
@@ -179,7 +199,8 @@
 {
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
     map[@"bStart"] = @(bStart);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGAction withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGAction withParm:map];
+    [self.methodChannel invokeMethod:@"onGetECGAction" arguments:map];
 }
 /**
  * 获取到实时袖带压力值
@@ -189,7 +210,8 @@
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
     map[@"bHeartbeat"] = @(bHeartBeat);
     map[@"nBldPrs"] = @(nNIBP);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPRealTime withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPRealTime withParm:map];
+    [self.methodChannel invokeMethod:@"onGetNIBPRealTime" arguments:map];
 }
 /**
  * 获取心电实时数据
@@ -207,7 +229,8 @@
     map[@"ecgdata"] = @{@"data":tempArr,@"frameNum":@(wave.frameNum)};
     map[@"nHR"] = @(nHR);
     map[@"bLeadoff"] = @(bLeadOff);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGRealTime withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGRealTime withParm:map];
+    [self.methodChannel invokeMethod:@"onGetECGRealTime" arguments:map];
 }
 /**
  * 获取到血压模块状态
@@ -220,7 +243,8 @@
     map[@"nHWMinor"] = @(nHWMinor);
     map[@"nSWMajor"] = @(nSWMajor);
     map[@"nSWMinor"] = @(nSWMinor);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGRealTime withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGRealTime withParm:map];
+    [self.methodChannel invokeMethod:@"onGetNIBPStatus" arguments:map];
 }
 /**
  * 下位机关机
@@ -229,7 +253,8 @@
 {
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
     map[@"result"] = @"finish";
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetPowerOff withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetPowerOff withParm:map];
+    [self.methodChannel invokeMethod:@"onGetPowerOff" arguments:map];
 }
 /**
  * 心电测量结果
@@ -240,7 +265,8 @@
     map[@"nResult"] = @(nResult);
     map[@"nHR"] = @(nHR);
     map[@"resultMsg"] = [self getECGResultMsg:nResult];
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGResult withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGResult withParm:map];
+    [self.methodChannel invokeMethod:@"onGetECGResult" arguments:map];
 }
 /**
  * 获取到设备ID
@@ -249,7 +275,8 @@
 {
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
     map[@"sDeviceID"] = [[NSString alloc] initWithData:sDeviceID encoding:NSUTF8StringEncoding];
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetDeviceID withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetDeviceID withParm:map];
+    [self.methodChannel invokeMethod:@"onGetDeviceID" arguments:map];
 }
 /**
  * 获取到血糖值
@@ -261,7 +288,8 @@
     map[@"nGlu"] = @(nGlu);
     map[@"nGluStatus"] = @(nGluStatus);
     map[@"gluUnit"] = @(gluUnit);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGResult withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGResult withParm:map];
+    [self.methodChannel invokeMethod:@"onGetGlu" arguments:map];
 }
 /**
  * 与设备连接丢失 - iOSsdk没有这个接口
@@ -273,7 +301,8 @@
 {
     NSMutableDictionary *map = [NSMutableDictionary dictionary];
     map[@"bStart"] = @(bStart);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPAction withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetNIBPAction withParm:map];
+    [self.methodChannel invokeMethod:@"onGetNIBPAction" arguments:map];
 }
 /**
  * 获取到血氧模块状态
@@ -286,7 +315,8 @@
     map[@"nHWMinor"] = @(nHWMinor);
     map[@"nSWMajor"] = @(nSWMajor);
     map[@"nSWMinor"] = @(nSWMinor);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Status withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Status withParm:map];
+    [self.methodChannel invokeMethod:@"onGetSpO2Status" arguments:map];
 }
 /**
  * 获取到设备版本信息
@@ -304,7 +334,8 @@
     map[@"nSWMajor"] = @(nSWMajeor);
     map[@"nSWMinor"] = @(nHWMinor);
     map[@"nBattery"] = @100;
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetDeviceVer withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetDeviceVer withParm:map];
+    [self.methodChannel invokeMethod:@"onGetDeviceVer" arguments:map];
 }
 /**
  * 获取到体温模块状态
@@ -317,7 +348,8 @@
     map[@"nSWMinor"] = @(nHWMinor);
     map[@"nSWMajor"] = @(nSWMajor);
     map[@"nHWMinor"] = @(nHWMinor);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetTmpStatus withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetTmpStatus withParm:map];
+    [self.methodChannel invokeMethod:@"onGetTmpStatus" arguments:map];
 }
 /**
  * 获取到体温数据
@@ -333,7 +365,20 @@
     map[@"nTmp"] = @(Tmp);
     map[@"nTmpStatus"] = @(TmpStatus);
     map[@"nResultStatus"] = @(nResultStatus);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetTmp withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetTmp withParm:map];
+    [self.methodChannel invokeMethod:@"onGetTmp" arguments:map];
+}
+-(void)spotCheck:(CRSpotCheck *)spotCheck OnGetTemp:(float)tempValue
+{
+    NSLog(@"%f",tempValue);
+    NSMutableDictionary *map = [NSMutableDictionary dictionary];
+    map[@"bManualStart"] = @"";
+    map[@"bProbeOff"] = @"";
+    map[@"nTmp"] = @(tempValue);
+    map[@"nTmpStatus"] = @"";
+    map[@"nResultStatus"] = @"";
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetTmp withParm:map];
+    [self.methodChannel invokeMethod:@"onGetTmp" arguments:map];
 }
 /**
  * 获取到心电模块版本
@@ -345,7 +390,8 @@
     map[@"nHWMinor"] = @(nHWMinor);
     map[@"nSWMajor"] = @(nSWMajeor);
     map[@"nSWMinor"] = @(nSWMinor);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGVer withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetECGVer withParm:map];
+    [self.methodChannel invokeMethod:@"onGetECGVer" arguments:map];
 }
 /**
  * 获取到血氧波形数据
@@ -361,7 +407,8 @@
         }];
     }
     map[@"waveData"] = tempArr;
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Wave withParm:map];
+    [self.methodChannel invokeMethod:@"onGetSpO2Wave" arguments:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Wave withParm:map];
 }
 /**
         * 获取到血氧参数
@@ -374,7 +421,8 @@
     map[@"nPI"] = @(nPI);
     map[@"nStatus"] = @(nStatus);
     map[@"nMode"] = @(nMode);
-    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Param withParm:map];
+//    [self.healthSdkPlugin handleMethodCallWithName:OnGetSpO2Param withParm:map];
+    [self.methodChannel invokeMethod:@"onGetSpO2Param" arguments:map];
 }
 
 - (NSMutableArray *)deviceList
@@ -474,5 +522,14 @@
             break;
     }
     return message;
+}
+
+///data转json字符串
+- (NSString *)dataToJsonString:(id)obj
+{
+    NSError *parseError = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:obj options:NSJSONWritingPrettyPrinted error:&parseError];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
 }
 @end

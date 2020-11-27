@@ -32,8 +32,7 @@ class MainPage extends StatefulWidget {
 
 class _MainState extends State<MainPage> {
   String _platformVersion = 'Unknown';
-  bool _bluStatue;
-  // String _bondDeviceStr = "";
+  String _address = "";
   @override
   void initState() {
     super.initState();
@@ -44,14 +43,21 @@ class _MainState extends State<MainPage> {
         setState(() {
           _platformVersion = "${data.length}";
         });
-        for (var item in data) {
-          print(item);
-        }
+        _address = data.first["address"];
+        // for (var item in data) {
+        //   print(item);
+        // }
+        HealthDataSdk.getBondedDevices().then((value) {
+          print("🍎 - getBondedDevices");
+          print(value);
+        });
       },
       onConnectSuccess: (data) async {
+        print("🍎 - onConnectSuccess");
         print(data.toString());
       },
       onConnectError: (data) async {
+        print("来444");
         print(data.toString());
       },
     );
@@ -94,7 +100,6 @@ class _MainState extends State<MainPage> {
             FlatButton(
               child: Text("开始扫描蓝牙设备"),
               onPressed: () {
-                print("来了");
                 HealthDataSdk.startDiscovery(maxTime: 10);
               },
             ),
@@ -125,7 +130,7 @@ class _MainState extends State<MainPage> {
             FlatButton(
               child: Text("连接健康包"),
               onPressed: () {
-                HealthDataSdk.connect("8C:DE:52:C2:A7:0B");
+                HealthDataSdk.connect(_address);
               },
             ),
 
