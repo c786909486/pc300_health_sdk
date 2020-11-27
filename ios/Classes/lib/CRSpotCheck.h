@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 //#import "BLEPort.h"
-#import "CRCommon.h"
+//#import "CRCommon.h"
 #import "CreativePeripheral.h"
 
 
@@ -25,7 +25,17 @@
 #define NIBP_ERROR_LOW_POWER 7
 
 
+struct dataWave
+{
+    BOOL bPulse;
+    int nWave;
+};
 
+struct ecgWave
+{
+    int frameNum;
+    struct dataWave wave[25];
+};
 
 @protocol  SpotCheckDelegate;
 @interface CRSpotCheck : NSObject
@@ -37,9 +47,9 @@
 +(CRSpotCheck *)sharedInstance;
 -(void) SetNIBPAction:(BOOL)bFlag port:(CreativePeripheral *)currentPort;
 -(void) SetECGAction:(BOOL)bFlag port:(CreativePeripheral *)currentPort;
+
 -(void) QueryDeviceVer:(CreativePeripheral *)currentPort;
 -(void) QueryEcgVer:(CreativePeripheral *)currentPort;
-//-(void) ReissueECGPack;
 -(void) QueryNIBPStatus:(CreativePeripheral *)currentPort;
 -(void) QuerySpO2Status:(CreativePeripheral *)currentPort;
 -(void) QueryGluStatus:(CreativePeripheral *)currentPort;
@@ -66,10 +76,7 @@
 
 -(void)spotCheck:(CRSpotCheck *)spotCheck OnGetECGVer:(int)nHWMajeor HWMinor:(int)nHWMinor SWMajor:(int)nSWMajeor SWMinor:(int)nSWMinor;
 
-
 -(void)spotCheck:(CRSpotCheck *)spotCheck OnGetSpo2Wave:(struct dataWave *)wave;
-
-
 
 -(void)spotCheck:(CRSpotCheck *)spotCheck OnGetECGRealTime:(struct ecgWave)wave HR:(int)nHR lead:(BOOL)bLeadOff  ;
 

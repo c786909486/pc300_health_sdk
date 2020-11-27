@@ -1,6 +1,7 @@
 name: pc300_health_sdk_example
 description: Demonstrates how to use the pc300_health_sdk plugin.
 publish_to: 'none'
+version: 0.0.1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

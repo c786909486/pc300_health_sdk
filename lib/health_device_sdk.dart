@@ -29,8 +29,8 @@ class HealthDataSdk {
   ///连接失败
   EventHandlerMap _onConnectError;
 
-//  ///搜索完成
-//  EventHandlerMap<List<BlueDevice>> _onDiscoveryComplete;
+  ///搜索完成
+  EventHandlerMap<List> _onDiscoveryComplete;
 
   ///获取设备id
   EventHandlerMap _onGetDeviceID;
@@ -83,7 +83,7 @@ class HealthDataSdk {
   ///获取到体温模块状态
   EventHandlerMap _onGetTmpStatus;
 
-  ///下位机关机
+  ///下位机关机 --> -- ios端没有此接口😭
   EventHandlerMap _onGetPowerOff;
 
   ///与设备连接丢失
@@ -93,11 +93,11 @@ class HealthDataSdk {
   void addDeviceLinkHandler({
     EventHandlerMap onConnectSuccess,
     EventHandlerMap onConnectError,
-//    EventHandlerMap<List<BlueDevice>> onDiscoveryComplete,
+    EventHandlerMap<List> onDiscoveryComplete,
   }) {
     this._onConnectSuccess = onConnectSuccess;
     this._onConnectError = onConnectError;
-//    this._onDiscoveryComplete = onDiscoveryComplete;
+    this._onDiscoveryComplete = onDiscoveryComplete;
   }
 
   ///健康数据回调
@@ -236,16 +236,14 @@ class HealthDataSdk {
       case "onConnectLose":
         return _onConnectLose(call.arguments.cast<String, dynamic>());
 
-//      ///获取全部设备列表
-//      case "onDiscoveryComplete":
-//        List<dynamic> list = json.decode(call.arguments);
-//        List<BlueDevice> devices = list.map((e) => BlueDevice.fromJson(e)).toList();
-//        return _onDiscoveryComplete(devices);
+      ///获取全部设备列表
+      case "onDiscoveryComplete":
+        List<dynamic> list = json.decode(call.arguments);
+        return _onDiscoveryComplete(list);
       default:
         throw new UnsupportedError("Unrecongnized Event");
     }
   }
-
 
   static Future<String> get platformVersion async {
     final String version = await _channel.invokeMethod('getPlatformVersion');
@@ -258,13 +256,13 @@ class HealthDataSdk {
     return isOpen;
   }
 
-  /// 打开蓝牙
+  /// 打开蓝牙 --> ios 端没只能跳转到系统设置界面😢没办法直接通过代码打开蓝牙
   static Future<bool> openDevice() async {
     bool openResult = await _channel.invokeMethod("openDevice");
     return openResult;
   }
 
-  /// 关闭蓝牙
+  /// 关闭蓝牙 --> ios 端没只能跳转到系统设置界面😢没办法直接通过代码关闭蓝牙
   static Future<bool> closeDevice() async {
     bool openResult = await _channel.invokeMethod("closeDevice");
     return openResult;
@@ -289,67 +287,67 @@ class HealthDataSdk {
     _channel.invokeMethod("disConnect");
   }
 
-//  static void startDiscovery(){
-//    _channel.invokeMethod("startDiscovery");
-//  }
+  static void startDiscovery({int maxTime}) {
+    _channel.invokeMethod("startDiscovery", {"address": maxTime});
+  }
 
-  ///开始接收数据
-  static void startMeasure(){
+  ///开始接收数据 --> ios 端没有这个方法😢
+  static void startMeasure() {
     _channel.invokeMethod("startMeasure");
   }
 
   ///停止接收数据
-  static void stopMeasure(){
+  static void stopMeasure() {
     _channel.invokeMethod("stopMeasure");
   }
 
   ///暂停接收数据
-  static void pauseMeasure(){
+  static void pauseMeasure() {
     _channel.invokeMethod("pauseMeasure");
   }
 
   ///恢复接收数据
-  static void continueMeasure(){
+  static void continueMeasure() {
     _channel.invokeMethod("continueMeasure");
   }
 
   ///查询设备版本信息
-  static void queryDeviceVer(){
+  static void queryDeviceVer() {
     _channel.invokeMethod("queryDeviceVer");
   }
 
   ///查询血压模块状态
-  static void queryNIBPStatus(){
+  static void queryNIBPStatus() {
     _channel.invokeMethod("queryNIBPStatus");
   }
 
   ///查询血氧模块状态
-  static void querySpO2Status(){
+  static void querySpO2Status() {
     _channel.invokeMethod("querySpO2Status");
   }
 
   ///查询血糖模块状态
-  static void queryGluStatus(){
+  static void queryGluStatus() {
     _channel.invokeMethod("queryGluStatus");
   }
 
   ///查询体温模块状态
-  static void queryTmpStatus(){
+  static void queryTmpStatus() {
     _channel.invokeMethod("queryTmpStatus");
   }
 
   ///查询心电模块版本信息
-  static void queryECGVer(){
+  static void queryECGVer() {
     _channel.invokeMethod("queryECGVer");
   }
 
   ///血压测量控制
-  static void setNIBPAction(bool startMeasure){
-    _channel.invokeMethod("setNIBPAction",{"startMeasure":startMeasure});
+  static void setNIBPAction(bool startMeasure) {
+    _channel.invokeMethod("setNIBPAction", {"startMeasure": startMeasure});
   }
 
   ///心电测量控制
-  static void setECGMotion(bool startMeasure){
-    _channel.invokeMethod("setECGMotion",{"startMeasure":startMeasure});
+  static void setECGMotion(bool startMeasure) {
+    _channel.invokeMethod("setECGMotion", {"startMeasure": startMeasure});
   }
 }
