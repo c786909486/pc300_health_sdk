@@ -15,7 +15,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,39 +23,47 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class MainPage extends StatefulWidget{
+class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _MainState();
   }
-
 }
 
-class _MainState extends State<MainPage>{
+class _MainState extends State<MainPage> {
   String _platformVersion = 'Unknown';
-  String _BondDeviceStr = "";
+  bool _bluStatue;
+  // String _bondDeviceStr = "";
   @override
   void initState() {
     super.initState();
     initPlatformState();
     HealthDataSdk.getInstance().addDeviceLinkHandler(
-        onConnectSuccess: (data) async{
-         print(data.toString());
-        },
-        onConnectError: (data) async {
-          print(data.toString());
-        },
-
+      onDiscoveryComplete: (data) async {
+        print("来了222");
+        setState(() {
+          _platformVersion = "${data.length}";
+        });
+        for (var item in data) {
+          print(item);
+        }
+      },
+      onConnectSuccess: (data) async {
+        print(data.toString());
+      },
+      onConnectError: (data) async {
+        print(data.toString());
+      },
     );
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    String platformVersion = "iOS版本没有实现监听蓝牙开启状态的方法";
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       bool isOpen = await HealthDataSdk.isOpen();
-      platformVersion = isOpen?"打开":"关闭";
+      platformVersion = isOpen ? "打开" : "关闭";
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -85,15 +92,15 @@ class _MainState extends State<MainPage>{
           children: <Widget>[
             Text('蓝牙状态: $_platformVersion\n'),
             FlatButton(
-              child: Text("打开蓝牙"),
-              onPressed: (){
-                HealthDataSdk.openDevice();
+              child: Text("开始扫描蓝牙设备"),
+              onPressed: () {
+                print("来了");
+                HealthDataSdk.startDiscovery(maxTime: 10);
               },
             ),
-
             FlatButton(
               child: Text("关闭蓝牙"),
-              onPressed: (){
+              onPressed: () {
                 HealthDataSdk.closeDevice();
               },
             ),
@@ -102,7 +109,7 @@ class _MainState extends State<MainPage>{
               child: Text("获取绑定设备"),
               onPressed: () async {
                 List<BlueDevice> item = await HealthDataSdk.getBondedDevices();
-                item.forEach((value){
+                item.forEach((value) {
                   print(value.toString());
                 });
               },
@@ -117,15 +124,15 @@ class _MainState extends State<MainPage>{
 
             FlatButton(
               child: Text("连接健康包"),
-              onPressed: ()  {
+              onPressed: () {
                 HealthDataSdk.connect("8C:DE:52:C2:A7:0B");
               },
             ),
 
             FlatButton(
               child: Text("测量数据"),
-              onPressed: ()  {
-                Navigator.push(context, MaterialPageRoute(builder: (context){
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return HealthDataPage();
                 }));
               },
@@ -133,7 +140,7 @@ class _MainState extends State<MainPage>{
 
             FlatButton(
               child: Text("断开连接"),
-              onPressed: ()  {
+              onPressed: () {
                 HealthDataSdk.disConnect();
               },
             ),
@@ -142,5 +149,4 @@ class _MainState extends State<MainPage>{
       ),
     );
   }
-
 }
