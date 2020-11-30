@@ -44,9 +44,9 @@ class _MainState extends State<MainPage> {
           _platformVersion = "${data.length}";
         });
         _address = data.first["address"];
-        // for (var item in data) {
-        //   print(item);
-        // }
+        for (var item in data) {
+          print(item);
+        }
         HealthDataSdk.getBondedDevices().then((value) {
           print("🍎 - getBondedDevices");
           print(value);
@@ -60,6 +60,11 @@ class _MainState extends State<MainPage> {
         print("来444");
         print(data.toString());
       },
+
+      onFindDevice: (data) async {
+        _address = data["address"];
+      }
+
     );
   }
 
@@ -115,21 +120,24 @@ class _MainState extends State<MainPage> {
               onPressed: () async {
                 List<BlueDevice> item = await HealthDataSdk.getBondedDevices();
                 item.forEach((value) {
-                  print(value.toString());
+                  if(value.name.contains("PC_300")){
+                    _address = value.address;
+                  }
                 });
               },
             ),
 
-//            FlatButton(
-//              child: Text("搜索设备"),
-//              onPressed: ()  {
-//                 HealthDataSdk.startDiscovery();
-//              },
-//            ),
+           // FlatButton(
+           //   child: Text("搜索设备"),
+           //   onPressed: ()  {
+           //      HealthDataSdk.startDiscovery();
+           //   },
+           // ),
 
             FlatButton(
               child: Text("连接健康包"),
               onPressed: () {
+                print("address ======>"+_address);
                 HealthDataSdk.connect(_address);
               },
             ),

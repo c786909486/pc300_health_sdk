@@ -37,4 +37,14 @@ class BlueDevice {
   String toString() {
     return 'BlueDevice{name: $name, address: $address, bondState: $bondState, type: $type}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is BlueDevice &&
+          runtimeType == other.runtimeType &&
+          address == other.address;
+
+  @override
+  int get hashCode => address.hashCode;
 }

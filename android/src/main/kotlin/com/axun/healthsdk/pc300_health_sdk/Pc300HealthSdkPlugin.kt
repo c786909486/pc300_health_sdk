@@ -26,7 +26,9 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAware{
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding
-        BlueManageUtils.instance.init(flutterPluginBinding.applicationContext, blueDeviceListener)
+        BlueManageUtils.instance.init(flutterPluginBinding.applicationContext)
+//        BluetoothContext.set(flutterPluginBinding.applicationContext)
+
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -71,7 +73,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            BlueManageUtils.instance.init(registrar.context(), blueDeviceListener)
+            BlueManageUtils.instance.init(registrar.context())
             instance.channel  = MethodChannel(registrar.messenger(), "pc300_health_sdk")
             instance.channel ?.setMethodCallHandler(Pc300HealthSdkPlugin())
         }
@@ -79,13 +81,13 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         val blueDeviceListener = object : BlueManageUtils.OnBlueToothCallback {
             override fun onStartDiscovery() {
-
+                Log.d("blueSearchStatus===》","开始搜索")
             }
 
             @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
             override fun OnDiscoveryCompleted(devices: MutableList<BluetoothDevice>) {
-                val list: MutableList<BlueDevice> = ArrayList()
 
+                val list: MutableList<BlueDevice> = ArrayList()
                 devices.forEach {
                     val item = BlueDevice(address = it.address,
                             name = it.name, type = it.type, bondState = it.bondState)
@@ -110,8 +112,12 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
             }
 
 
+            @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
             override fun onFindDevice(device: BluetoothDevice) {
-
+                Log.d("66666",device.name)
+                val item = BlueDevice(address = device.address,
+                        name = device.name, type = device.type, bondState = device.bondState)
+                sendChannelMessage(onFindDeviceCode,item.toAccessorJson())
             }
 
         }
@@ -220,6 +226,12 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
                         instance.channel?.invokeMethod("onDiscoveryComplete",msg.obj)
                     }
 
+                    /*查询到设备*/
+                    onFindDeviceCode->{
+
+                        instance.channel?.invokeMethod("onFindDevice",msg.obj)
+                    }
+
                 }
             }
         }
@@ -231,6 +243,8 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         /*获取全部设备列表*/
         val onDiscoveryCompleteCode = 0x121
+
+        val onFindDeviceCode = 0x122
 
         /*获取到设备ID*/
         val onGetDeviceIDCode = 0x102
@@ -362,7 +376,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 开始搜索设备
              **/
             "startDiscovery"->{
-                BlueManageUtils.instance.startDiscovery()
+                BlueManageUtils.instance.startDiscovery(blueDeviceListener)
             }
 
             /**

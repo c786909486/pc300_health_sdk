@@ -11,4 +11,6 @@ data class BlueDevice (
         var type:Int = 0,
         var bondState:Int = 0){
 
+
+
 }

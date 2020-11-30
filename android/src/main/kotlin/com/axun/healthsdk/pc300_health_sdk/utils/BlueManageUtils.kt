@@ -39,36 +39,37 @@ class BlueManageUtils {
 
     }
 
-    fun init(context: Context, blueListener: OnBlueToothCallback) {
+    fun init(context: Context) {
         this.context = context
-        this.bluetoothListener = blueListener
+
         client = BluetoothOpertion(context, listener)
     }
 
-    fun startDiscovery() {
+    fun startDiscovery(listener: OnBlueToothCallback) {
         bluetoothListener?.onStartDiscovery()
+        this.bluetoothListener = listener
         client.Discovery()
     }
 
     private val listener = object : IBluetoothCallBack {
         override fun OnConnectFail(p0: String?) {
-            Log.d(tag, "连接失败====》$p0")
+//            Log.d(tag, "连接失败====》$p0")
             if (bluetoothListener != null && p0 != "Connecting") {
                 bluetoothListener!!.onConnectError(p0!!)
             }
         }
 
         override fun OnException(p0: Int) {
-            Log.d(tag, "连接错误====》$p0")
-            bluetoothListener!!.onConnectError("连接错误====》$p0")
+//            Log.d(tag, "连接错误====》$p0")
+            bluetoothListener!!.onConnectError(if (p0==1) "搜索超时" else "蓝牙未打开")
         }
 
         override fun OnDiscoveryCompleted(p0: MutableList<BluetoothDevice>?) {
             Log.d(tag, "搜索完成====》${p0!!.size}")
 
             val devices: MutableList<BluetoothDevice> = ArrayList()
-            for (item in p0) {
-                if (item.name.contains("PC_300")) {
+            for (item in p0!!) {
+                if (!item.name.isNullOrEmpty()&&item.name.contains("PC_300")&&!devices.contains(item)) {
                     devices.add(item)
                 }
             }
@@ -76,8 +77,8 @@ class BlueManageUtils {
         }
 
         override fun OnFindDevice(p0: BluetoothDevice?) {
-            Log.d(tag, "发现设备====》${p0!!.name}")
-            if (p0.name.contains("PC_300")) {
+//            Log.d(tag, "发现设备====》${p0!!.name?: p0!!.address}")
+            if (!p0!!.name.isNullOrEmpty()&&p0!!.name.contains("PC_300")) {
                 bluetoothListener?.onFindDevice(p0)
             }
 
