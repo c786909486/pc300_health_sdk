@@ -53,7 +53,7 @@ class BlueManageUtils {
 
     private val listener = object : IBluetoothCallBack {
         override fun OnConnectFail(p0: String?) {
-//            Log.d(tag, "连接失败====》$p0")
+            Log.d(tag, "连接失败====》$p0")
             if (bluetoothListener != null && p0 != "Connecting") {
                 bluetoothListener!!.onConnectError(p0!!)
             }

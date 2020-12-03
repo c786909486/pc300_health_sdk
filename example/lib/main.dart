@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:pc300_health_sdk/health_data_plugin.dart';
 import 'package:pc300_health_sdk_example/health_data_page.dart';
+import 'package:pc300_health_sdk_example/health_widght_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,35 +38,59 @@ class _MainState extends State<MainPage> {
   void initState() {
     super.initState();
     initPlatformState();
-    HealthDataSdk.getInstance().addDeviceLinkHandler(
-      onDiscoveryComplete: (data) async {
-        print("来了222");
-        setState(() {
-          _platformVersion = "${data.length}";
-        });
-        _address = data.first["address"];
-        for (var item in data) {
-          print(item);
+    HealthDeviceLinkUtils.initListener(
+        onStart: (){
+          print("onstart==========>开始搜索");
+        },
+        onFinish: (){
+          print("onFinish==========>搜索结束${HealthDeviceLinkUtils.deviceList.length}");
+          if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
+            var device = HealthDeviceLinkUtils.deviceList[0];
+            _address = device.address;
+            print("deviceInfo=============>"+device.toString());
+            // Future.delayed(Duration(milliseconds: 500),(){
+            //   HealthDeviceLinkUtils.linkDevice(device);
+            // });
+          }
+        },
+        onLinkError: (error){
+          print("onLinkError==========>连接失败");
+        },
+        onLinkSuccess: (){
+          print("onLinkSuccess==========>连接成功");
         }
-        HealthDataSdk.getBondedDevices().then((value) {
-          print("🍎 - getBondedDevices");
-          print(value);
-        });
-      },
-      onConnectSuccess: (data) async {
-        print("🍎 - onConnectSuccess");
-        print(data.toString());
-      },
-      onConnectError: (data) async {
-        print("来444");
-        print(data.toString());
-      },
-
-      onFindDevice: (data) async {
-        _address = data["address"];
-      }
 
     );
+
+    // HealthDataSdk.getInstance().addDeviceLinkHandler(
+    //   onDiscoveryComplete: (data) async {
+    //     print("来了222");
+    //     setState(() {
+    //       _platformVersion = "${data.length}";
+    //     });
+    //     _address = data.first["address"];
+    //     for (var item in data) {
+    //       print(item);
+    //     }
+    //     HealthDataSdk.getBondedDevices().then((value) {
+    //       print("🍎 - getBondedDevices");
+    //       print(value);
+    //     });
+    //   },
+    //   onConnectSuccess: (data) async {
+    //     print("🍎 - onConnectSuccess");
+    //     print(data.toString());
+    //   },
+    //   onConnectError: (data) async {
+    //     print("来444");
+    //     print(data.toString());
+    //   },
+    //
+    //   onFindDevice: (data) async {
+    //     _address = data.address;
+    //   }
+    //
+    // );
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -138,7 +163,16 @@ class _MainState extends State<MainPage> {
               child: Text("连接健康包"),
               onPressed: () {
                 print("address ======>"+_address);
-                HealthDataSdk.connect(_address);
+                // HealthDataSdk.connect(_address);
+
+                if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
+                  var device = HealthDeviceLinkUtils.deviceList[0];
+                  _address = device.address;
+                  print("deviceInfo=============>"+device.toString());
+                  // Future.delayed(Duration(milliseconds: 500),(){
+                    HealthDeviceLinkUtils.linkDevice(device);
+                  // });
+                }
               },
             ),
 
@@ -147,6 +181,16 @@ class _MainState extends State<MainPage> {
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return HealthDataPage();
+                }));
+              },
+            ),
+
+
+            FlatButton(
+              child: Text("测量数据Widget"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return HealthWidgetPage();
                 }));
               },
             ),

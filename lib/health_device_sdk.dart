@@ -32,7 +32,7 @@ class HealthDataSdk {
   ///搜索完成
   EventHandlerMap<List> _onDiscoveryComplete;
 
-  EventHandlerMap _onFindDevice;
+  EventHandlerMap<BlueDevice> _onFindDevice;
 
   ///获取设备id
   EventHandlerMap _onGetDeviceID;
@@ -95,7 +95,7 @@ class HealthDataSdk {
   void addDeviceLinkHandler({
     EventHandlerMap onConnectSuccess,
     EventHandlerMap onConnectError,
-    EventHandlerMap onFindDevice,
+    EventHandlerMap<BlueDevice> onFindDevice,
     EventHandlerMap<List> onDiscoveryComplete,
   }) {
     this._onConnectSuccess = onConnectSuccess;
@@ -246,7 +246,7 @@ class HealthDataSdk {
         return _onDiscoveryComplete(list);
 
       case "onFindDevice":
-        return _onFindDevice(json.decode(call.arguments));
+        return _onFindDevice(BlueDevice.fromJson(json.decode(call.arguments)));
       default:
         throw new UnsupportedError("Unrecongnized Event");
     }
