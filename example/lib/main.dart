@@ -39,18 +39,15 @@ class _MainState extends State<MainPage> {
     super.initState();
     initPlatformState();
     HealthDeviceLinkUtils.initListener(
-        onStart: (){
-          print("onstart==========>开始搜索");
-        },
         onFinish: (){
           print("onFinish==========>搜索结束${HealthDeviceLinkUtils.deviceList.length}");
           if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
             var device = HealthDeviceLinkUtils.deviceList[0];
             _address = device.address;
             print("deviceInfo=============>"+device.toString());
-            // Future.delayed(Duration(milliseconds: 500),(){
-            //   HealthDeviceLinkUtils.linkDevice(device);
-            // });
+            Future.delayed(Duration(milliseconds: 1000),(){
+              HealthDeviceLinkUtils.linkDevice(device);
+            });
           }
         },
         onLinkError: (error){

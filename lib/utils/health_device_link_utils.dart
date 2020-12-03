@@ -16,9 +16,8 @@ class HealthDeviceLinkUtils {
   static bool isOnline = false;
 
   static void initListener(
-      {LinkDeviceListener onStart, LinkDeviceListener onFinish,LinkDeviceListener onLinkSuccess,LinkErrorListener onLinkError}) async {
+      {LinkDeviceListener onFinish,LinkDeviceListener onLinkSuccess,LinkErrorListener onLinkError}) async {
 
-    onStart();
     HealthDataSdk.getBondedDevices().then((value) {
       for(var item in value){
         if(item.name.contains("PC300")&&!deviceList.contains(item)){
