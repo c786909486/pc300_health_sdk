@@ -91,10 +91,8 @@ class BlueManageUtils {
             Log.d(tag, "连接成功====》")
             currentDevice = p0
             bluetoothListener?.onConnectSuccess()
-            Handler().postDelayed({
-                healthClient.Start()
-                healthClient.QueryDeviceVer()
-            },300)
+            healthClient.Start()
+            healthClient.QueryDeviceVer()
 //            BlueManageUtils.instance.healthClient.SetECGMotion(true)
 //            BlueManageUtils.instance.healthClient.SetNIBPAction(true)
 //            BlueManageUtils.instance.healthClient.QueryDeviceVer()
