@@ -45,9 +45,10 @@ class _MainState extends State<MainPage> {
             var device = HealthDeviceLinkUtils.deviceList[0];
             _address = device.address;
             print("deviceInfo=============>"+device.toString());
-            Future.delayed(Duration(milliseconds: 1000),(){
-              HealthDeviceLinkUtils.linkDevice(device);
-            });
+            // Future.delayed(Duration(milliseconds: 1500),(){
+            //
+            // });
+            HealthDeviceLinkUtils.linkDevice(device);
           }
         },
         onLinkError: (error){

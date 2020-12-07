@@ -362,6 +362,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
             "connect" -> {
                 val address = call.argument<String>("address")
                 val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
+                BlueManageUtils.instance. client.StopDiscovery()
                 BlueManageUtils.instance.client.Connect(device)
             }
 

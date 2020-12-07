@@ -82,6 +82,7 @@ class BlueManageUtils {
                 bluetoothListener?.onFindDevice(p0)
             }
 
+
         }
 
         override fun OnConnected(p0: BluetoothSocket?) {
@@ -90,8 +91,10 @@ class BlueManageUtils {
             Log.d(tag, "连接成功====》")
             currentDevice = p0
             bluetoothListener?.onConnectSuccess()
-            healthClient.Start()
-            healthClient.QueryDeviceVer()
+            Handler().postDelayed({
+                healthClient.Start()
+                healthClient.QueryDeviceVer()
+            },300)
 //            BlueManageUtils.instance.healthClient.SetECGMotion(true)
 //            BlueManageUtils.instance.healthClient.SetNIBPAction(true)
 //            BlueManageUtils.instance.healthClient.QueryDeviceVer()

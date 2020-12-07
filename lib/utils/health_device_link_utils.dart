@@ -15,6 +15,8 @@ class HealthDeviceLinkUtils {
 
   static bool isOnline = false;
 
+  static bool _canConnect = true;
+
   static void initListener(
       {LinkDeviceListener onFinish,LinkDeviceListener onLinkSuccess,LinkErrorListener onLinkError}) async {
 
@@ -36,9 +38,11 @@ class HealthDeviceLinkUtils {
           onFinish();
         },
         onConnectSuccess: (data) async {
-          onLinkSuccess();
+
           device = _selectDevice;
           isOnline = true;
+          _canConnect = true;
+          onLinkSuccess();
         },
         onConnectError: (data) async {
           if(data["message"]=="搜索超时"){
@@ -46,6 +50,7 @@ class HealthDeviceLinkUtils {
           }else{
             onLinkError(data["message"]);
           }
+          _canConnect = true;
         },
         onFindDevice: (data) async {
           if(!deviceList.contains(data)){
@@ -59,8 +64,11 @@ class HealthDeviceLinkUtils {
   }
 
   static void linkDevice(BlueDevice device){
-    HealthDataSdk.connect(device.address);
-    _selectDevice = device;
+    if(_canConnect){
+      HealthDataSdk.connect(device.address);
+      _selectDevice = device;
+      _canConnect = false;
+    }
 
   }
 }
