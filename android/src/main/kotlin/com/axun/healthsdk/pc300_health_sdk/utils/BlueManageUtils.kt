@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.Handler
 import android.util.Log
+import com.alibaba.fastjson.JSON
 import com.axun.healthsdk.pc300_health_sdk.Pc300HealthSdkPlugin
 import com.creative.base.BLUReader
 import com.creative.base.BLUSender
@@ -145,6 +146,7 @@ class BlueManageUtils {
         override fun OnGetECGRealTime(ecgdata: BaseDate.ECGData?, nHR: Int, bLeadoff: Boolean) {
             Log.d(tag, "OnGetECGRealTime")
             val map = HashMap<String, Any?>()
+            val dataStr = ecgdata?.toAccessorJson()
             map["ecgdata"] = ecgdata
             map["nHR"] = nHR
             map["bLeadoff"] = bLeadoff

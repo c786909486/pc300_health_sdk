@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pc300_health_sdk/health_data_plugin.dart';
 import 'package:pc300_health_sdk/model/ecg_data_model.dart';
@@ -201,7 +202,13 @@ class HealthDataSdk {
       ///获取心电实时数据
       case "onGetECGRealTime":
 //        Map<String,dynamic> map = {"dad":"dadasd"};
-        Map<String, dynamic> map = jsonDecode(call.arguments);
+        Map<String, dynamic> map ;
+        if(Platform.isAndroid){
+          map = jsonDecode(call.arguments);
+        }else{
+          var json = jsonEncode(call.arguments);
+          map = jsonDecode(json);
+        }
         return _onGetECGRealTime(EcgDataModel.fromJson(map));
 
       ///心电测量结果
