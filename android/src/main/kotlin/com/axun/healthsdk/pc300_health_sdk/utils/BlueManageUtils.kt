@@ -56,13 +56,13 @@ class BlueManageUtils {
         override fun OnConnectFail(p0: String?) {
             Log.d(tag, "连接失败====》$p0")
             if (bluetoothListener != null && p0 != "Connecting") {
-                bluetoothListener!!.onConnectError(p0!!)
+                bluetoothListener?.onConnectError(p0!!)
             }
         }
 
         override fun OnException(p0: Int) {
 //            Log.d(tag, "连接错误====》$p0")
-            bluetoothListener!!.onConnectError(if (p0==1) "搜索超时" else "蓝牙未打开")
+            bluetoothListener?.onConnectError(if (p0==1) "搜索超时" else "蓝牙未打开")
         }
 
         override fun OnDiscoveryCompleted(p0: MutableList<BluetoothDevice>?) {

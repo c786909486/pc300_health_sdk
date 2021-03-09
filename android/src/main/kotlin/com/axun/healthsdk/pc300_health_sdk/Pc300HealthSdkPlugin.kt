@@ -132,7 +132,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         var handler = @SuppressLint("HandlerLeak")
         object : Handler(Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 when (msg?.what) {
                     onConnectSuccessCode -> {
