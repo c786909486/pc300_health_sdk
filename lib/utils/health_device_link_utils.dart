@@ -22,7 +22,7 @@ class HealthDeviceLinkUtils {
 
     HealthDataSdk.getBondedDevices().then((value) {
       for(var item in value){
-        if(item.name.contains("PC300")&&!deviceList.contains(item)){
+        if(item.name!=null&&item.name.contains("PC300")&&!deviceList.contains(item)){
           deviceList.add(item);
         }
       }
