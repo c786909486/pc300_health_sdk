@@ -14,10 +14,10 @@ class BlueDevice {
   /// Bluetooth device type, Dual Mode - BR/EDR/LE
   static final int DEVICE_TYPE_DUAL = 3;
 
-  String name;
-  String address;
-  int bondState;
-  int type;
+  String? name;
+  String? address;
+  int? bondState;
+  int? type;
 
   BlueDevice({
     this.name,
