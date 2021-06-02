@@ -5,7 +5,7 @@ author: Axun <c786909486@gmail.com>
 homepage: https://github.com/c786909486/pc300_health_sdk
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:

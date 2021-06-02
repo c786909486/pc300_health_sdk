@@ -7,22 +7,22 @@ typedef void LinkDeviceListener();
 typedef void LinkErrorListener(String error);
 
 class HealthDeviceLinkUtils {
-  static BlueDevice device;
+  static BlueDevice? device;
 
   static List<BlueDevice> deviceList = [];
 
-  static BlueDevice _selectDevice;
+  static BlueDevice? _selectDevice;
 
   static bool isOnline = false;
 
   static bool _canConnect = true;
 
   static void initListener(
-      {LinkDeviceListener onFinish,LinkDeviceListener onLinkSuccess,LinkErrorListener onLinkError}) async {
+      {LinkDeviceListener? onFinish,LinkDeviceListener? onLinkSuccess,LinkErrorListener? onLinkError}) async {
 
     HealthDataSdk.getBondedDevices().then((value) {
       for(var item in value){
-        if(item.name!=null&&item.name.contains("PC300")&&!deviceList.contains(item)){
+        if(item.name!=null&&item.name!.contains("PC300")&&!deviceList.contains(item)){
           deviceList.add(item);
         }
       }
@@ -35,20 +35,20 @@ class HealthDeviceLinkUtils {
               deviceList.add(bd);
             }
           }
-          onFinish();
+          onFinish!();
         },
         onConnectSuccess: (data) async {
 
           device = _selectDevice;
           isOnline = true;
           _canConnect = true;
-          onLinkSuccess();
+          onLinkSuccess!();
         },
         onConnectError: (data) async {
           if(data["message"]=="搜索超时"){
-            onFinish();
+            onFinish!();
           }else{
-            onLinkError(data["message"]);
+            onLinkError!(data["message"]);
           }
           _canConnect = true;
         },
@@ -57,7 +57,7 @@ class HealthDeviceLinkUtils {
             deviceList.add(data);
           }
 
-          onFinish();
+          onFinish!();
         });
 
     // HealthDataSdk.startDiscovery(maxTime: 10);
@@ -65,7 +65,7 @@ class HealthDeviceLinkUtils {
 
   static void linkDevice(BlueDevice device){
     if(_canConnect){
-      HealthDataSdk.connect(device.address);
+      HealthDataSdk.connect(device.address!);
       _selectDevice = device;
       _canConnect = false;
     }

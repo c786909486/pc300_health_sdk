@@ -1,7 +1,7 @@
 class EcgDataModel {
-    bool bLeadoff;
-    Ecgdata ecgdata;
-    int nHR;
+    bool? bLeadoff;
+    Ecgdata? ecgdata;
+    int? nHR;
 
     EcgDataModel({this.bLeadoff, this.ecgdata, this.nHR});
 
@@ -18,15 +18,15 @@ class EcgDataModel {
         data['bLeadoff'] = this.bLeadoff;
         data['nHR'] = this.nHR;
         if (this.ecgdata != null) {
-            data['ecgdata'] = this.ecgdata.toJson();
+            data['ecgdata'] = this.ecgdata?.toJson();
         }
         return data;
     }
 }
 
 class Ecgdata {
-    List<Data> data;
-    int frameNum;
+    List<Data>? data;
+    int? frameNum;
 
     Ecgdata({this.data, this.frameNum});
 
@@ -41,15 +41,15 @@ class Ecgdata {
         final Map<String, dynamic> data = new Map<String, dynamic>();
         data['frameNum'] = this.frameNum;
         if (this.data != null) {
-            data['`data`'] = this.data.map((v) => v.toJson()).toList();
+            data['`data`'] = this.data?.map((v) => v.toJson()).toList();
         }
         return data;
     }
 }
 
 class Data {
-    int data;
-    int flag;
+    int? data;
+    int? flag;
 
     Data({this.data, this.flag});
 

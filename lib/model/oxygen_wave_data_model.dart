@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class OxgenWaveDataModel {
-    List<WaveData> waveData;
+    List<WaveData>? waveData;
 
     OxgenWaveDataModel({this.waveData});
 
@@ -14,7 +14,7 @@ class OxgenWaveDataModel {
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> data = new Map<String, dynamic>();
         if (this.waveData != null) {
-            data['waveData'] = this.waveData.map((v) => v.toJson()).toList();
+            data['waveData'] = this.waveData?.map((v) => v.toJson()).toList();
         }
         return data;
     }
@@ -26,8 +26,8 @@ class OxgenWaveDataModel {
 }
 
 class WaveData {
-    int data;
-    int flag;
+    int? data;
+    int? flag;
 
     WaveData({this.data, this.flag});
 
