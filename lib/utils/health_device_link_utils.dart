@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:pc300_health_sdk/health_data_plugin.dart';
 import 'package:pc300_health_sdk/model/blue_device.dart';
 
@@ -20,13 +19,13 @@ class HealthDeviceLinkUtils {
   static void initListener(
       {LinkDeviceListener? onFinish,LinkDeviceListener? onLinkSuccess,LinkErrorListener? onLinkError}) async {
 
-    HealthDataSdk.getBondedDevices().then((value) {
-      for(var item in value){
-        if(item.name!=null&&item.name!.contains("PC300")&&!deviceList.contains(item)){
-          deviceList.add(item);
-        }
-      }
-    });
+    // HealthDataSdk.getBondedDevices().then((value) {
+    //   for(var item in value){
+    //     if(item.name!=null&&item.name=="PC_300SNT"&&!deviceList.contains(item)){
+    //       deviceList.add(item);
+    //     }
+    //   }
+    // });
     HealthDataSdk.getInstance().addDeviceLinkHandler(
         onDiscoveryComplete: (data) async {
           for(var item in data){
@@ -54,7 +53,7 @@ class HealthDeviceLinkUtils {
         },
         onFindDevice: (data) async {
           if(!deviceList.contains(data)){
-            deviceList.add(data);
+            deviceList.insert(0,data);
           }
 
           onFinish!();
@@ -70,5 +69,12 @@ class HealthDeviceLinkUtils {
       _canConnect = false;
     }
 
+  }
+  
+  static void release(){
+    device = null;
+    _selectDevice = null;
+    _canConnect = true;
+    isOnline = false;
   }
 }

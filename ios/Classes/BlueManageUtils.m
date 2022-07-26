@@ -87,7 +87,7 @@
     
     if (port.advName != nil) {
         NSLog(@"%@ - %@",port.advName,port.peripheral.identifier);
-        if ([port.advName containsString:@"PC_300"]) {
+        if ([port.advName isEqualToString:@"PC_300SNT"]) {
             [self.deviceList addObject:@{
                 @"name":port.advName != nil ? port.advName : @"",
                 @"address":port.peripheral.identifier.UUIDString,

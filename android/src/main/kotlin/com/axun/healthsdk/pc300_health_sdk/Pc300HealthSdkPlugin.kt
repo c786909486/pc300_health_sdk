@@ -47,7 +47,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        instance.channel = MethodChannel(flutterPluginBinding?.binaryMessenger, "pc300_health_sdk")
+        instance.channel = MethodChannel(flutterPluginBinding?.binaryMessenger!!, "pc300_health_sdk")
        instance.channel ?.setMethodCallHandler(Pc300HealthSdkPlugin())
     }
 

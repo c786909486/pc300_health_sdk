@@ -70,7 +70,7 @@ class BlueManageUtils {
 
             val devices: MutableList<BluetoothDevice> = ArrayList()
             for (item in p0!!) {
-                if (!item.name.isNullOrEmpty()&&item.name.contains("PC_300")&&!devices.contains(item)) {
+                if (!item.name.isNullOrEmpty()&&item.name=="PC_300SNT"&&!devices.contains(item)) {
                     devices.add(item)
                 }
             }
@@ -79,7 +79,7 @@ class BlueManageUtils {
 
         override fun OnFindDevice(p0: BluetoothDevice?) {
 //            Log.d(tag, "发现设备====》${p0!!.name?: p0!!.address}")
-            if (!p0!!.name.isNullOrEmpty()&&p0!!.name.contains("PC_300")) {
+            if (!p0!!.name.isNullOrEmpty()&&p0!!.name=="PC_300SNT") {
                 bluetoothListener?.onFindDevice(p0)
             }
 
