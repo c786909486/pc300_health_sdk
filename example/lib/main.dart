@@ -125,20 +125,20 @@ class _MainState extends State<MainPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('蓝牙状态: $_platformVersion\n'),
-            FlatButton(
+            ElevatedButton(
               child: Text("开始扫描蓝牙设备"),
               onPressed: () {
                 HealthDataSdk.startDiscovery(maxTime: 10);
               },
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text("关闭蓝牙"),
               onPressed: () {
                 HealthDataSdk.closeDevice();
               },
             ),
 
-            FlatButton(
+            ElevatedButton(
               child: Text("获取绑定设备"),
               onPressed: () async {
                 List<BlueDevice> item = await HealthDataSdk.getBondedDevices();
@@ -150,14 +150,14 @@ class _MainState extends State<MainPage> {
               },
             ),
 
-           // FlatButton(
+           // ElevatedButton(
            //   child: Text("搜索设备"),
            //   onPressed: ()  {
            //      HealthDataSdk.startDiscovery();
            //   },
            // ),
 
-            FlatButton(
+            ElevatedButton(
               child: Text("连接健康包"),
               onPressed: () {
                 print("address ======>"+_address);
@@ -174,7 +174,7 @@ class _MainState extends State<MainPage> {
               },
             ),
 
-            FlatButton(
+            ElevatedButton(
               child: Text("测量数据"),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -184,7 +184,7 @@ class _MainState extends State<MainPage> {
             ),
 
 
-            FlatButton(
+            ElevatedButton(
               child: Text("测量数据Widget"),
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -193,7 +193,7 @@ class _MainState extends State<MainPage> {
               },
             ),
 
-            FlatButton(
+            ElevatedButton(
               child: Text("断开连接"),
               onPressed: () {
                 HealthDataSdk.disConnect();

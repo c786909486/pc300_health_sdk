@@ -4,6 +4,10 @@
 //
 //  Created by axun on 2020/11/19.
 //
+#if TARGET_IPHONE_SIMULATOR
+
+
+#else
 
 #import "BlueManageUtils.h"
 #import "CRCreativeSDK.h"
@@ -64,7 +68,7 @@
 }
 - (void)connectDevice:(NSString *) myPeripheralAddress
 {
-    
+
     [[CRCreativeSDK sharedInstance] stopScan];
     for (CreativePeripheral *peripheral in [[CRCreativeSDK sharedInstance] GetDeviceList]) {
         if ([myPeripheralAddress isEqualToString:peripheral.peripheral.identifier.UUIDString]) {
@@ -84,7 +88,7 @@
 ///当搜索到一个蓝牙设备时调用。
 -(void)crManager:(CRCreativeSDK *)crManager OnFindDevice:(CreativePeripheral *)port
 {
-    
+
     if (port.advName != nil) {
         NSLog(@"%@ - %@",port.advName,port.peripheral.identifier);
         if ([port.advName isEqualToString:@"PC_300SNT"]) {
@@ -95,7 +99,7 @@
                 @"type":@1,
             }];
         }
-        
+
     }
 }
 ///搜索完成时调用
@@ -123,7 +127,7 @@
         };
         [self.methodChannel invokeMethod:@"onConnectError" arguments:parm];
     }
-    
+
 }
 ///连接失败。
 -(void)crManager:(CRCreativeSDK *)crManager OnConnectFail:(CBPeripheral *)port
@@ -533,3 +537,6 @@
     return jsonString;
 }
 @end
+
+#endif
+

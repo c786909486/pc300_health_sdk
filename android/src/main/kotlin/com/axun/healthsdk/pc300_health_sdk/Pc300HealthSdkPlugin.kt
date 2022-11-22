@@ -228,7 +228,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
                     /*查询到设备*/
                     onFindDeviceCode->{
-
+                        Log.d("66666","device.name")
                         instance.channel?.invokeMethod("onFindDevice",msg.obj)
                     }
 

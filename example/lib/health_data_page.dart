@@ -87,7 +87,7 @@ class _HealthDataState extends State<HealthDataPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            FlatButton(
+            ElevatedButton(
               child: Text("测量血压"),
               onPressed: (){
                 HealthDataSdk.setNIBPAction(true);

@@ -4,7 +4,18 @@
 //
 //  Created by axun on 2020/11/19.
 //
+#if TARGET_IPHONE_SIMULATOR
 
+#import <Foundation/Foundation.h>
+#import "Pc300HealthSdkPlugin.h"
+
+
+//typedef void(^scanResult_block)(NSMutableArray *deviceList);
+//typedef void(^OnConnectSuccess_block)(int isConnect);
+@interface BlueManageUtils : NSObject
+
+@end
+#else
 #import <Foundation/Foundation.h>
 #import "CRSpotCheck.h"
 #import "Pc300HealthSdkPlugin.h"
@@ -49,3 +60,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif
+

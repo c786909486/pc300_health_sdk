@@ -1,3 +1,27 @@
+#if TARGET_IPHONE_SIMULATOR
+#import "Pc300HealthSdkPlugin.h"
+
+@implementation Pc300HealthSdkPlugin
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+  FlutterMethodChannel* channel = [FlutterMethodChannel
+      methodChannelWithName:@"pc300_health_sdk"
+            binaryMessenger:[registrar messenger]];
+  Pc300HealthSdkPlugin* instance = [[Pc300HealthSdkPlugin alloc] init];
+  [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+  if ([@"getPlatformVersion" isEqualToString:call.method]) {
+    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+  } else {
+    result(FlutterMethodNotImplemented);
+  }
+}
+
+@end
+
+#else
+
 #import "Pc300HealthSdkPlugin.h"
 #import "BlueManageUtils.h"
 
@@ -20,14 +44,14 @@
 - (instancetype)initWithChannel:(FlutterMethodChannel *)channel
                       registrar:(NSObject<FlutterPluginRegistrar>*)registrar
                       messenger:(NSObject<FlutterBinaryMessenger>*)messenger {
-    
+
     if (self) {
 //        self.methodChannel = channel;
         [BlueManageUtils shareEngine].methodChannel = channel;
         self.manageUtils =  [BlueManageUtils shareEngine];
-        
+
     }
-    
+
     return self;
 }
 
@@ -171,3 +195,6 @@
     return jsonString;
 }
 @end
+
+#endif
+
