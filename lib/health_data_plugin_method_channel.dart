@@ -275,9 +275,9 @@ class HealthDataPluginMethodChannel extends HealthDataPluginPlatform {
   }
 
   Future<dynamic> _handleMethod(MethodCall call) async {
-    print(call.method +
-        "***************************\ndata:" +
-        call.arguments.toString());
+    // print(call.method +
+    //     "***************************\ndata:" +
+    //     call.arguments.toString());
     switch (call.method) {
 
     ///连接设备成功

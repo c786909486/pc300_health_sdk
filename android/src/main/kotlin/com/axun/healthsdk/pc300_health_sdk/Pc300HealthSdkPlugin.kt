@@ -81,7 +81,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
         val blueDeviceListener = object : BlueManageUtils.OnBlueToothCallback {
             override fun onStartDiscovery() {
-                Log.d("blueSearchStatus===》","开始搜索")
+//                Log.d("blueSearchStatus===》","开始搜索")
             }
 
             @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -114,7 +114,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
             @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
             override fun onFindDevice(device: BluetoothDevice) {
-                Log.d("66666",device.name)
+//                Log.d("66666",device.name)
                 val item = BlueDevice(address = device.address,
                         name = device.name, type = device.type, bondState = device.bondState)
                 sendChannelMessage(onFindDeviceCode,item.toAccessorJson())
@@ -228,7 +228,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
 
                     /*查询到设备*/
                     onFindDeviceCode->{
-                        Log.d("66666","device.name")
+//                        Log.d("66666","device.name")
                         instance.channel?.invokeMethod("onFindDevice",msg.obj)
                     }
 

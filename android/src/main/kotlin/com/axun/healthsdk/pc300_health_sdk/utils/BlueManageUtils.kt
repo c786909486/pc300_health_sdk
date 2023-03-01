@@ -54,7 +54,7 @@ class BlueManageUtils {
 
     private val listener = object : IBluetoothCallBack {
         override fun OnConnectFail(p0: String?) {
-            Log.d(tag, "连接失败====》$p0")
+//            Log.d(tag, "连接失败====》$p0")
             if (bluetoothListener != null && p0 != "Connecting") {
                 bluetoothListener?.onConnectError(p0!!)
             }
@@ -66,7 +66,7 @@ class BlueManageUtils {
         }
 
         override fun OnDiscoveryCompleted(p0: MutableList<BluetoothDevice>?) {
-            Log.d(tag, "搜索完成====》${p0!!.size}")
+//            Log.d(tag, "搜索完成====》${p0!!.size}")
 
             val devices: MutableList<BluetoothDevice> = ArrayList()
             for (item in p0!!) {
@@ -89,7 +89,7 @@ class BlueManageUtils {
         override fun OnConnected(p0: BluetoothSocket?) {
 
             healthClient = SpotCheck(BLUReader(p0?.inputStream), BLUSender(p0?.outputStream), healthCallBack)
-            Log.d(tag, "连接成功====》")
+//            Log.d(tag, "连接成功====》")
             currentDevice = p0
             bluetoothListener?.onConnectSuccess()
             healthClient.Start()
@@ -105,7 +105,7 @@ class BlueManageUtils {
          * 血压测量结果
          */
         override fun OnGetNIBPResult(bHR: Boolean, nPulse: Int, nMAP: Int, nSYS: Int, nDIA: Int, nGrade: Int, nBPErr: Int) {
-            Log.d(tag, "OnGetNIBPResult")
+
             val map = HashMap<String, Any>()
             map["bHR"] = bHR
             map["nPulse"] = nPulse
@@ -115,6 +115,7 @@ class BlueManageUtils {
             map["nGrade"] = nGrade
             map["nBPErr"] = nBPErr
             map["errorMsg"] = getErrorMessage(nBPErr)
+            Log.d(tag, "OnGetNIBPResult===>${map}")
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPResultCode, map)
         }
 
@@ -122,7 +123,7 @@ class BlueManageUtils {
          * 心电测量状态改变
          */
         override fun OnGetECGAction(bStart: Boolean) {
-            Log.d(tag, "心电测量状态改变====》$bStart ")
+//            Log.d(tag, "心电测量状态改变====》$bStart ")
             val map = HashMap<String, Any>()
             map["bStart"] = bStart
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetECGActionCode, map)
@@ -132,7 +133,7 @@ class BlueManageUtils {
          * 获取到实时袖带压力值
          */
         override fun OnGetNIBPRealTime(bHeartbeat: Boolean, nBldPrs: Int) {
-            Log.d(tag, "OnGetNIBPRealTime")
+            Log.d(tag, "OnGetNIBPRealTime===》${nBldPrs}")
             val map = HashMap<String, Any>()
             map["bHeartbeat"] = bHeartbeat
             map["nBldPrs"] = nBldPrs
@@ -144,7 +145,7 @@ class BlueManageUtils {
          * 获取心电实时数据
          */
         override fun OnGetECGRealTime(ecgdata: BaseDate.ECGData?, nHR: Int, bLeadoff: Boolean) {
-            Log.d(tag, "OnGetECGRealTime")
+//            Log.d(tag, "OnGetECGRealTime")
             val map = HashMap<String, Any?>()
             val dataStr = ecgdata?.toAccessorJson()
             map["ecgdata"] = ecgdata
@@ -172,7 +173,7 @@ class BlueManageUtils {
          * 下位机关机
          */
         override fun OnGetPowerOff() {
-            Log.d(tag, "OnGetPowerOff")
+//            Log.d(tag, "OnGetPowerOff")
             val map = HashMap<String, Any?>()
             map["result"] = "finish"
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetPowerOffCode, map)
@@ -182,7 +183,7 @@ class BlueManageUtils {
          * 心电测量结果
          */
         override fun OnGetECGResult(nResult: Int, nHR: Int) {
-            Log.d(tag, "OnGetECGResult")
+//            Log.d(tag, "OnGetECGResult")
             val map = HashMap<String, Any?>()
             map["nResult"] = nResult
             map["nHR"] = nHR
@@ -194,7 +195,7 @@ class BlueManageUtils {
          * 获取到血糖模块状态
          */
         override fun OnGetGluStatus(nStatus: Int, nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int) {
-            Log.d(tag, "OnGetGluStatus")
+//            Log.d(tag, "OnGetGluStatus")
             val map = HashMap<String, Any?>()
             map["nStatus"] = nStatus
             map["nHWMajor"] = nHWMajor
@@ -208,7 +209,7 @@ class BlueManageUtils {
          * 获取到设备ID
          */
         override fun OnGetDeviceID(sDeviceID: String?) {
-            Log.d(tag, "OnGetDeviceID")
+//            Log.d(tag, "OnGetDeviceID")
             val map = HashMap<String, Any?>()
             map["sDeviceID"] = sDeviceID
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetDeviceIDCode, map)
@@ -219,7 +220,7 @@ class BlueManageUtils {
          * 血糖值只有在nResultStatus=0时有效
          */
         override fun OnGetGlu(nGlu: Int, nGluStatus: Int) {
-            Log.d(tag, "OnGetGlu")
+//            Log.d(tag, "OnGetGlu")
             val map = HashMap<String, Any?>()
             map["nGlu"] = nGlu
             map["nGluStatus"] = nGluStatus
@@ -230,7 +231,7 @@ class BlueManageUtils {
          * 与设备连接丢失
          */
         override fun OnConnectLose() {
-            Log.d(tag, "OnConnectLose")
+//            Log.d(tag, "OnConnectLose")
             val map = HashMap<String, Any?>()
             map["result"] = "lose"
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onConnectLoseCode, map)
@@ -240,7 +241,7 @@ class BlueManageUtils {
          * 血压测量状态改变
          */
         override fun OnGetNIBPAction(bStart: Boolean) {
-            Log.d(tag, "OnGetNIBPAction")
+//            Log.d(tag, "OnGetNIBPAction")
             val map = HashMap<String, Any?>()
             map["bStart"] = bStart
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPActionCode, map)
@@ -250,7 +251,7 @@ class BlueManageUtils {
          * 获取到血氧模块状态
          */
         override fun OnGetSpO2Status(nStatus: Int, nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int) {
-            Log.d(tag, "OnGetSpO2Status")
+//            Log.d(tag, "OnGetSpO2Status")
             val map = HashMap<String, Any?>()
             map["nStatus"] = nStatus
             map["nHWMajor"] = nHWMajor
@@ -268,7 +269,7 @@ class BlueManageUtils {
          * BATTERY_CHARGING_COMPLETED:充电完成
          */
         override fun OnGetDeviceVer(nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int, nPower: Int, nBattery: Int) {
-            Log.d(tag, "OnGetDeviceVer")
+//            Log.d(tag, "OnGetDeviceVer")
             val map = HashMap<String, Any?>()
             map["nPower"] = nPower
             map["nHWMajor"] = nHWMajor
@@ -283,7 +284,7 @@ class BlueManageUtils {
          * 获取到体温模块状态
          */
         override fun OnGetTmpStatus(nStatus: Int, nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int) {
-            Log.d(tag, "OnGetTmpStatus")
+//            Log.d(tag, "OnGetTmpStatus")
             val map = HashMap<String, Any?>()
             map["nStatus"] = nStatus
             map["nHWMajor"] = nHWMajor
@@ -300,7 +301,7 @@ class BlueManageUtils {
          * nTmp/100+30=实际体温值 结果保留一位小数，不采用四舍五入方式，直接丢掉小数点2位之后的数。如：36.57 = 36.5
          */
         override fun OnGetTmp(bManualStart: Boolean, bProbeOff: Boolean, nTmp: Int, nTmpStatus: Int, nResultStatus: Int) {
-            Log.d(tag, "获取到体温数据====》${if (bManualStart) "手动测量" else "自动测量"}\n ,${if (bProbeOff) "探头脱落" else ""},体温值：$nTmp")
+//            Log.d(tag, "获取到体温数据====》${if (bManualStart) "手动测量" else "自动测量"}\n ,${if (bProbeOff) "探头脱落" else ""},体温值：$nTmp")
             val map = HashMap<String, Any>()
             map["bManualStart"] = bManualStart
             map["bProbeOff"] = bProbeOff
@@ -315,7 +316,7 @@ class BlueManageUtils {
          * 获取到心电模块版本
          */
         override fun OnGetECGVer(nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int) {
-            Log.d(tag, "OnGetECGVer")
+//            Log.d(tag, "OnGetECGVer")
             val map = HashMap<String, Any?>()
             map["nHWMajor"] = nHWMajor
             map["nHWMinor"] = nHWMinor
@@ -328,7 +329,7 @@ class BlueManageUtils {
          * 获取到血氧波形数据
          */
         override fun OnGetSpO2Wave(waveData: MutableList<BaseDate.Wave>?) {
-            Log.d(tag, "OnGetSpO2Wave")
+//            Log.d(tag, "OnGetSpO2Wave")
             val map = HashMap<String, Any?>()
             map["waveData"] = waveData
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetSpO2WaveCode, map.toAccessorJson())
@@ -338,7 +339,7 @@ class BlueManageUtils {
          * 获取到血氧参数
          */
         override fun OnGetSpO2Param(nSpO2: Int, nPR: Int, nPI: Int, nStatus: Int, nMode: Int) {
-            Log.d(tag, "OnGetSpO2Param")
+//            Log.d(tag, "OnGetSpO2Param")
             val map = HashMap<String, Any?>()
             map["nSpO2"] = nSpO2
             map["nPR"] = nPR
