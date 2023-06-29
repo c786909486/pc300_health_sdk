@@ -28,13 +28,13 @@ class HealthDeviceLinkUtils {
     // });
     HealthDataSdk.getInstance().addDeviceLinkHandler(
         onDiscoveryComplete: (data) async {
-          for(var item in data){
-            BlueDevice bd = BlueDevice.fromJson(item);
-            if(!deviceList.contains(bd)){
-              deviceList.add(bd);
-            }
-          }
-          onFinish!();
+          // for(var item in data){
+          //   BlueDevice bd = BlueDevice.fromJson(item);
+          //   if(!deviceList.contains(bd)){
+          //     deviceList.add(bd);
+          //   }
+          // }
+          // onFinish!();
         },
         onConnectSuccess: (data) async {
 
@@ -74,5 +74,7 @@ class HealthDeviceLinkUtils {
     _selectDevice = null;
     _canConnect = true;
     isOnline = false;
+    HealthDataSdk.disConnect();
+
   }
 }

@@ -10,7 +10,6 @@ import 'model/blue_device.dart';
 typedef Future<dynamic> EventHandlerMap<T>(T event);
 
 class HealthDataSdk {
-
   static HealthDataSdk? _instance;
 
   static HealthDataSdk getInstance() {
@@ -19,9 +18,6 @@ class HealthDataSdk {
     }
     return _instance!;
   }
-
-
-
 
   static Future<String?> get platformVersion async {
     return await HealthDataPluginPlatform.instance.getPlatformVersion();
@@ -49,76 +45,76 @@ class HealthDataSdk {
 
   ///连接设备
   static void connect(String address) {
-    return  HealthDataPluginPlatform.instance.connect(address);
+    return HealthDataPluginPlatform.instance.connect(address);
   }
 
   ///断开连接
   static void disConnect() {
-    return  HealthDataPluginPlatform.instance.disConnect();
+    return HealthDataPluginPlatform.instance.disConnect();
   }
 
   static void startDiscovery({int maxTime = 20}) {
-    return  HealthDataPluginPlatform.instance.startDiscovery(maxTime: maxTime);
+    return HealthDataPluginPlatform.instance.startDiscovery(maxTime: maxTime);
   }
 
   ///开始接收数据 --> ios 端没有这个方法😢
   static void startMeasure() {
-    return  HealthDataPluginPlatform.instance.startMeasure();
+    return HealthDataPluginPlatform.instance.startMeasure();
   }
 
   ///停止接收数据
   static void stopMeasure() {
-    return  HealthDataPluginPlatform.instance.stopMeasure();
+    return HealthDataPluginPlatform.instance.stopMeasure();
   }
 
   ///暂停接收数据
   static void pauseMeasure() {
-    return  HealthDataPluginPlatform.instance.pauseMeasure();
+    return HealthDataPluginPlatform.instance.pauseMeasure();
   }
 
   ///恢复接收数据
   static void continueMeasure() {
-    return  HealthDataPluginPlatform.instance.continueMeasure();
+    return HealthDataPluginPlatform.instance.continueMeasure();
   }
 
   ///查询设备版本信息
   static void queryDeviceVer() {
-    return  HealthDataPluginPlatform.instance.queryDeviceVer();
+    return HealthDataPluginPlatform.instance.queryDeviceVer();
   }
 
   ///查询血压模块状态
   static void queryNIBPStatus() {
-    return  HealthDataPluginPlatform.instance.queryNIBPStatus();
+    return HealthDataPluginPlatform.instance.queryNIBPStatus();
   }
 
   ///查询血氧模块状态
   static void querySpO2Status() {
-    return  HealthDataPluginPlatform.instance.querySpO2Status();
+    return HealthDataPluginPlatform.instance.querySpO2Status();
   }
 
   ///查询血糖模块状态
   static void queryGluStatus() {
-    return  HealthDataPluginPlatform.instance.queryGluStatus();
+    return HealthDataPluginPlatform.instance.queryGluStatus();
   }
 
   ///查询体温模块状态
   static void queryTmpStatus() {
-    return  HealthDataPluginPlatform.instance.queryTmpStatus();
+    return HealthDataPluginPlatform.instance.queryTmpStatus();
   }
 
   ///查询心电模块版本信息
   static void queryECGVer() {
-    return  HealthDataPluginPlatform.instance.queryECGVer();
+    return HealthDataPluginPlatform.instance.queryECGVer();
   }
 
   ///血压测量控制
   static void setNIBPAction(bool startMeasure) {
-    return  HealthDataPluginPlatform.instance.setNIBPAction(startMeasure);
+    return HealthDataPluginPlatform.instance.setNIBPAction(startMeasure);
   }
 
   ///心电测量控制
   static void setECGMotion(bool startMeasure) {
-    return  HealthDataPluginPlatform.instance.setECGMotion(startMeasure);
+    return HealthDataPluginPlatform.instance.setECGMotion(startMeasure);
   }
 
   ///设备连接回调
@@ -159,25 +155,25 @@ class HealthDataSdk {
     EventHandlerMap? onConnectLose,
   }) {
     HealthDataPluginPlatform.instance.addHealthDataHandler(
-        onGetDeviceID:onGetDeviceID,
-      onGetDeviceVer:onGetDeviceVer,
-      onGetECGVer:onGetECGVer,
-      onGetSpO2Param:onGetSpO2Param,
-      onGetSpO2Wave:onGetSpO2Wave,
-      onGetNIBPAction:onGetNIBPAction,
-      onGetNIBPRealTime:onGetNIBPRealTime,
-      onGetNIBPResult:onGetNIBPResult,
-      onGetECGAction:onGetECGAction,
-      onGetECGRealTime:onGetECGRealTime,
-      onGetECGResult:onGetECGResult,
-      onGetTmp:onGetTmp,
-      onGetGlu:onGetGlu,
-      onGetNIBPStatus:onGetNIBPStatus,
-      onGetSpO2Status:onGetSpO2Status,
-      onGetGluStatus:onGetGluStatus,
-      onGetTmpStatus:onGetTmpStatus,
-      onGetPowerOff:onGetPowerOff,
-      onConnectLose:onConnectLose,
+      onGetDeviceID: onGetDeviceID,
+      onGetDeviceVer: onGetDeviceVer,
+      onGetECGVer: onGetECGVer,
+      onGetSpO2Param: onGetSpO2Param,
+      onGetSpO2Wave: onGetSpO2Wave,
+      onGetNIBPAction: onGetNIBPAction,
+      onGetNIBPRealTime: onGetNIBPRealTime,
+      onGetNIBPResult: onGetNIBPResult,
+      onGetECGAction: onGetECGAction,
+      onGetECGRealTime: onGetECGRealTime,
+      onGetECGResult: onGetECGResult,
+      onGetTmp: onGetTmp,
+      onGetGlu: onGetGlu,
+      onGetNIBPStatus: onGetNIBPStatus,
+      onGetSpO2Status: onGetSpO2Status,
+      onGetGluStatus: onGetGluStatus,
+      onGetTmpStatus: onGetTmpStatus,
+      onGetPowerOff: onGetPowerOff,
+      onConnectLose: onConnectLose,
     );
   }
 }

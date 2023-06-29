@@ -379,7 +379,6 @@ class HealthDataPluginMethodChannel extends HealthDataPluginPlatform {
         return _onDiscoveryComplete!(list);
 
       case "onFindDevice":
-        print("12313131231");
         return _onFindDevice!(BlueDevice.fromJson(json.decode(call.arguments)));
       default:
         throw new UnsupportedError("Unrecongnized Event");
