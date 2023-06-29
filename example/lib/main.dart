@@ -40,11 +40,11 @@ class _MainState extends State<MainPage> {
     initPlatformState();
     HealthDeviceLinkUtils.initListener(
         onFinish: (){
-          print("onFinish==========>搜索结束${HealthDeviceLinkUtils.deviceList.length}");
+          // print("onFinish==========>搜索结束${HealthDeviceLinkUtils.deviceList.length}");
           if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
             var device = HealthDeviceLinkUtils.deviceList[0];
             _address = device.address;
-            print("deviceInfo=============>"+device.toString());
+            // print("deviceInfo=============>"+device.toString());
             // Future.delayed(Duration(milliseconds: 1500),(){
             //
             // });
@@ -160,16 +160,9 @@ class _MainState extends State<MainPage> {
             ElevatedButton(
               child: Text("连接健康包"),
               onPressed: () {
-                print("address ======>"+_address);
-                // HealthDataSdk.connect(_address);
-
                 if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
                   var device = HealthDeviceLinkUtils.deviceList[0];
-                  _address = device.address;
-                  print("deviceInfo=============>"+device.toString());
-                  // Future.delayed(Duration(milliseconds: 500),(){
                     HealthDeviceLinkUtils.linkDevice(device);
-                  // });
                 }
               },
             ),

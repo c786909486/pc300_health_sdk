@@ -321,7 +321,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 检查蓝牙是否打开
              **/
             "isOpen" -> {
-                val isOpen = BlueManageUtils.instance.client.isOpen
+                val isOpen = BlueManageUtils.instance.client?.isOpen?:false
                 result.success(isOpen)
             }
 
@@ -329,7 +329,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 打开蓝牙
              **/
             "openDevice" -> {
-                val open = BlueManageUtils.instance.client.Open()
+                val open = BlueManageUtils.instance.client?.Open()?:false
                 result.success(open)
             }
 
@@ -337,7 +337,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 关闭蓝牙
              **/
             "closeDevice" -> {
-                val close = BlueManageUtils.instance.client.Close()
+                val close = BlueManageUtils.instance.client?.Close()?:false
                 result.success(close.toString())
             }
 
@@ -345,7 +345,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 获取已绑定设备
              **/
             "getBondedDevices" -> {
-                val devices = BlueManageUtils.instance.client.bondedDevices
+                val devices = BlueManageUtils.instance.client?.bondedDevices?: mutableSetOf()
                 val list: MutableList<BlueDevice> = ArrayList()
 
                 devices.forEach {
@@ -360,10 +360,15 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 连接设备
              **/
             "connect" -> {
-                val address = call.argument<String>("address")
-                val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
-                BlueManageUtils.instance. client.StopDiscovery()
-                BlueManageUtils.instance.client.Connect(device)
+                if (BlueManageUtils.instance.isConnect){
+                    Log.d(TAG, "onMethodCall: 已连接")
+                }else{
+                    val address = call.argument<String>("address")
+                    val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(address)
+                    BlueManageUtils.instance. client?.StopDiscovery()
+                    BlueManageUtils.instance.client?.Connect(device)
+                }
+
             }
 
             /**
@@ -384,70 +389,70 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              * @Description 开始接受数据
              **/
             "startMeasure" -> {
-                BlueManageUtils.instance.healthClient.Start()
+                BlueManageUtils.instance.healthClient?.Start()
             }
 
             /**
              * @Description 停止接受数据
              **/
             "stopMeasure" -> {
-                BlueManageUtils.instance.healthClient.Stop()
+                BlueManageUtils.instance.healthClient?.Stop()
             }
 
             /**
              * @Description 暂停接受数据
              **/
             "pauseMeasure" -> {
-                BlueManageUtils.instance.healthClient.Pause()
+                BlueManageUtils.instance.healthClient?.Pause()
             }
 
             /**
              * @Description 恢复接受数据
              **/
             "continueMeasure" -> {
-                BlueManageUtils.instance.healthClient.Continue()
+                BlueManageUtils.instance.healthClient?.Continue()
             }
 
             /**
              * @Description 查询设备版本信息
              **/
             "queryDeviceVer" -> {
-                BlueManageUtils.instance.healthClient.QueryDeviceVer()
+                BlueManageUtils.instance.healthClient?.QueryDeviceVer()
             }
 
             /**
              * @Description 查询血压模块状态
              **/
             "queryNIBPStatus" -> {
-                BlueManageUtils.instance.healthClient.QueryNIBPStatus()
+                BlueManageUtils.instance.healthClient?.QueryNIBPStatus()
             }
 
             /**
              * @Description 查询血氧模块状态
              **/
             "querySpO2Status" -> {
-                BlueManageUtils.instance.healthClient.QuerySpO2Status()
+                BlueManageUtils.instance.healthClient?.QuerySpO2Status()
             }
 
             /**
              * @Description 查询血糖模块状态
              **/
             "queryGluStatus" ->{
-                BlueManageUtils.instance.healthClient.QueryGluStatus()
+                BlueManageUtils.instance.healthClient?.QueryGluStatus()
             }
 
             /**
              * @Description 查询体温模块状态
              **/
             "queryTmpStatus"->{
-                BlueManageUtils.instance.healthClient.QueryTmpStatus()
+                BlueManageUtils.instance.healthClient?.QueryTmpStatus()
             }
 
             /**
              * @Description 查询心电模块版本信息
              **/
             "queryECGVer" -> {
-                BlueManageUtils.instance.healthClient.QueryECGVer()
+                BlueManageUtils.instance.healthClient?.QueryECGVer()
             }
 
             /**
@@ -455,7 +460,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              **/
             "setNIBPAction" -> {
                 val startMeasure = call.argument<Boolean>("startMeasure")
-                BlueManageUtils.instance.healthClient.SetNIBPAction(startMeasure?:false)
+                BlueManageUtils.instance.healthClient?.SetNIBPAction(startMeasure?:false)
             }
 
             /**
@@ -463,7 +468,7 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
              **/
             "setECGMotion"->{
                 val startMeasure = call.argument<Boolean>("startMeasure")
-                BlueManageUtils.instance.healthClient.SetECGMotion(startMeasure?:false)
+                BlueManageUtils.instance.healthClient?.SetECGMotion(startMeasure?:false)
             }
 
             else -> {

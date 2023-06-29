@@ -63,11 +63,9 @@ class HealthDeviceLinkUtils {
   }
 
   static void linkDevice(BlueDevice device){
-    if(_canConnect){
       HealthDataSdk.connect(device.address!);
       _selectDevice = device;
       _canConnect = false;
-    }
 
   }
   

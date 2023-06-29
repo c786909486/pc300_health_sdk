@@ -25,13 +25,15 @@ import java.util.ArrayList
  *@date 2019-07-24
  */
 class BlueManageUtils {
-    lateinit var client: BluetoothOpertion
+    var client: BluetoothOpertion?=null
     private var tag = "BlueManageUtils"
     private lateinit var context: Context
     var currentDevice: BluetoothSocket? = null
-    lateinit var healthClient: SpotCheck
+    var healthClient: SpotCheck?=null
     var canLink = true
     var hasHealth = false
+
+    var isConnect = false
 
     companion object {
         val instance by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
@@ -42,19 +44,19 @@ class BlueManageUtils {
 
     fun init(context: Context) {
         this.context = context
-
         client = BluetoothOpertion(context, listener)
     }
 
     fun startDiscovery(listener: OnBlueToothCallback) {
         bluetoothListener?.onStartDiscovery()
         this.bluetoothListener = listener
-        client.Discovery()
+        client?.Discovery()
     }
 
     private val listener = object : IBluetoothCallBack {
         override fun OnConnectFail(p0: String?) {
 //            Log.d(tag, "连接失败====》$p0")
+            isConnect = false
             if (bluetoothListener != null && p0 != "Connecting") {
                 bluetoothListener?.onConnectError(p0!!)
             }
@@ -62,6 +64,7 @@ class BlueManageUtils {
 
         override fun OnException(p0: Int) {
 //            Log.d(tag, "连接错误====》$p0")
+            isConnect = false
             bluetoothListener?.onConnectError(if (p0==1) "搜索超时" else "蓝牙未打开")
         }
 
@@ -91,9 +94,10 @@ class BlueManageUtils {
             healthClient = SpotCheck(BLUReader(p0?.inputStream), BLUSender(p0?.outputStream), healthCallBack)
 //            Log.d(tag, "连接成功====》")
             currentDevice = p0
+            isConnect = true
             bluetoothListener?.onConnectSuccess()
-            healthClient.Start()
-            healthClient.QueryDeviceVer()
+            healthClient?.Start()
+            healthClient?.QueryDeviceVer()
 //            BlueManageUtils.instance.healthClient.SetECGMotion(true)
 //            BlueManageUtils.instance.healthClient.SetNIBPAction(true)
 //            BlueManageUtils.instance.healthClient.QueryDeviceVer()
@@ -115,7 +119,7 @@ class BlueManageUtils {
             map["nGrade"] = nGrade
             map["nBPErr"] = nBPErr
             map["errorMsg"] = getErrorMessage(nBPErr)
-            Log.d(tag, "OnGetNIBPResult===>${map}")
+//            Log.d(tag, "OnGetNIBPResult===>${map}")
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetNIBPResultCode, map)
         }
 
@@ -133,7 +137,7 @@ class BlueManageUtils {
          * 获取到实时袖带压力值
          */
         override fun OnGetNIBPRealTime(bHeartbeat: Boolean, nBldPrs: Int) {
-            Log.d(tag, "OnGetNIBPRealTime===》${nBldPrs}")
+//            Log.d(tag, "OnGetNIBPRealTime===》${nBldPrs}")
             val map = HashMap<String, Any>()
             map["bHeartbeat"] = bHeartbeat
             map["nBldPrs"] = nBldPrs
@@ -158,7 +162,7 @@ class BlueManageUtils {
          * 获取到血压模块状态
          */
         override fun OnGetNIBPStatus(nStatus: Int, nHWMajor: Int, nHWMinor: Int, nSWMajor: Int, nSWMinor: Int) {
-            Log.d(tag, "OnGetNIBPStatus")
+//            Log.d(tag, "OnGetNIBPStatus")
             val map = HashMap<String, Any?>()
             map["nStatus"] = nStatus
             map["nHWMajor"] = nHWMajor
@@ -403,9 +407,17 @@ class BlueManageUtils {
 
     fun release() {
         if (currentDevice != null) {
-            client.DisConnect(instance.currentDevice!!)
+//            currentDevice?.close()
+            healthClient?.Stop()
+            client?.DisConnect(instance.currentDevice!!)
             currentDevice = null
+            healthClient = null
+            isConnect = false
+
+//            client = null
+//            bluetoothListener = null
         }
+        isConnect = false
     }
 
     private var bluetoothListener: OnBlueToothCallback? = null
