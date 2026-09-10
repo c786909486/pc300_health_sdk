@@ -81,7 +81,8 @@
 - (void)disconnectDevice
 {
     NSLog(@"断开连接时 - %@",self.currentPeripheral.advName);
-    return [[CRCreativeSDK sharedInstance] disconnectDevice:self.currentPeripheral];
+    [[CRCreativeSDK sharedInstance] disconnectDevice:self.currentPeripheral];
+    self.currentPeripheral = nil;
 }
 
 #pragma mark - CreativeDelegate
@@ -108,6 +109,9 @@
 //    if (self.scanResult) {
 //        self.scanResult(self.deviceList);
 //    }
+//             NSLog(@"OnSearchCompleted - %@",self.deviceList);
+
+//     [self.methodChannel invokeMethod:@"onDiscoveryComplete" arguments:[self dataToJsonString:self.deviceList]];
     [self.methodChannel invokeMethod:@"onDiscoveryComplete" arguments:[self dataToJsonString:self.deviceList]];
 }
 ///与设备连接成功时调用。

@@ -43,7 +43,7 @@ class _MainState extends State<MainPage> {
           // print("onFinish==========>搜索结束${HealthDeviceLinkUtils.deviceList.length}");
           if(HealthDeviceLinkUtils.deviceList.isNotEmpty){
             var device = HealthDeviceLinkUtils.deviceList[0];
-            _address = device.address;
+            _address = device.address!;
             // print("deviceInfo=============>"+device.toString());
             // Future.delayed(Duration(milliseconds: 1500),(){
             //
@@ -143,8 +143,8 @@ class _MainState extends State<MainPage> {
               onPressed: () async {
                 List<BlueDevice> item = await HealthDataSdk.getBondedDevices();
                 item.forEach((value) {
-                  if(value.name.contains("PC_300")){
-                    _address = value.address;
+                  if(value.name!.contains("PC_300")){
+                    _address = value.address!;
                   }
                 });
               },

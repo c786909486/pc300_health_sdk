@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:pc300_health_sdk/health_data_plugin.dart';
 import 'package:pc300_health_sdk/model/blue_device.dart';
 
@@ -28,13 +30,15 @@ class HealthDeviceLinkUtils {
     // });
     HealthDataSdk.getInstance().addDeviceLinkHandler(
         onDiscoveryComplete: (data) async {
-          // for(var item in data){
-          //   BlueDevice bd = BlueDevice.fromJson(item);
-          //   if(!deviceList.contains(bd)){
-          //     deviceList.add(bd);
-          //   }
-          // }
-          // onFinish!();
+          if(Platform.isIOS){
+            for(var item in data){
+              BlueDevice bd = BlueDevice.fromJson(item);
+              if(!deviceList.contains(bd)){
+                deviceList.add(bd);
+              }
+            }
+            onFinish!();
+          }
         },
         onConnectSuccess: (data) async {
 

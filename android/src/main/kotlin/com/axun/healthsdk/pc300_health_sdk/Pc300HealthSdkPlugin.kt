@@ -20,7 +20,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
+// import io.flutter.plugin.common.PluginRegistry.Registrar
 
 /** Pc300HealthSdkPlugin */
 public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAware{
@@ -71,12 +71,12 @@ public class Pc300HealthSdkPlugin : FlutterPlugin, MethodCallHandler ,ActivityAw
         }
 
 
-        @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            BlueManageUtils.instance.init(registrar.context())
-            instance.channel  = MethodChannel(registrar.messenger(), "pc300_health_sdk")
-            instance.channel ?.setMethodCallHandler(Pc300HealthSdkPlugin())
-        }
+        // @JvmStatic
+        // fun registerWith(registrar: Registrar) {
+        //     BlueManageUtils.instance.init(registrar.context())
+        //     instance.channel  = MethodChannel(registrar.messenger(), "pc300_health_sdk")
+        //     instance.channel ?.setMethodCallHandler(Pc300HealthSdkPlugin())
+        // }
 
 
         val blueDeviceListener = object : BlueManageUtils.OnBlueToothCallback {

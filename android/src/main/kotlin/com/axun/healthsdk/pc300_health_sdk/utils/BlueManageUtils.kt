@@ -69,7 +69,7 @@ class BlueManageUtils {
         }
 
         override fun OnDiscoveryCompleted(p0: MutableList<BluetoothDevice>?) {
-//            Log.d(tag, "搜索完成====》${p0!!.size}")
+            Log.d(tag, "搜索完成====》${p0!!.size}")
 
             val devices: MutableList<BluetoothDevice> = ArrayList()
             for (item in p0!!) {
@@ -81,7 +81,7 @@ class BlueManageUtils {
         }
 
         override fun OnFindDevice(p0: BluetoothDevice?) {
-//            Log.d(tag, "发现设备====》${p0!!.name?: p0!!.address}")
+            Log.d(tag, "发现设备====》${p0!!.name?: p0!!.address}")
             if (!p0!!.name.isNullOrEmpty()&&p0!!.name=="PC_300SNT") {
                 bluetoothListener?.onFindDevice(p0)
             }
@@ -178,6 +178,12 @@ class BlueManageUtils {
          */
         override fun OnGetPowerOff() {
 //            Log.d(tag, "OnGetPowerOff")
+            isConnect = false
+//            BlueManageUtils.instance.release()
+//            healthClient?.Stop()
+            client?.DisConnect(instance.currentDevice!!)
+            currentDevice = null
+            healthClient = null
             val map = HashMap<String, Any?>()
             map["result"] = "finish"
             Pc300HealthSdkPlugin.sendChannelMessage(Pc300HealthSdkPlugin.onGetPowerOffCode, map)

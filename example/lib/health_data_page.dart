@@ -56,7 +56,7 @@ class _HealthDataState extends State<HealthDataPage> {
       ///获取心电实时数据
       setState(() {
 
-        _tmp = data.ecgdata.data[0].data.toString();
+        _tmp = data.ecgdata!.data![0].data.toString();
       });
     },onGetECGResult:(data) async{
       ///获取心电结果
